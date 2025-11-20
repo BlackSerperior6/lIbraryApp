@@ -1,4 +1,5 @@
-﻿using LibraryApplication.InputForms;
+﻿using LibraryApplication.BufferForms;
+using LibraryApplication.InputForms;
 using LibraryApplication.Structs;
 using Microsoft.VisualBasic;
 using Npgsql;
@@ -11,6 +12,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading.Tasks.Dataflow;
 using System.Windows.Forms;
 
 namespace LibraryApplication
@@ -367,6 +369,96 @@ namespace LibraryApplication
             catch (Exception ex)
             {
                 MessageBox.Show($"Ошибка при выполнение запроса: {ex.Message}", "Ошибка!",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void DatesReturn_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var editor = new DatesPickerForm();
+                editor.Show();
+
+                var begDate = editor.firstDate;
+                var endDate = editor.lastDate;
+
+                Dictionary<Book, DateTime> books = new Dictionary<Book, DateTime>();
+
+                using (var connection = new NpgsqlConnection(connectionString))
+                {
+                    connection.Open();
+                    string query = $"SELECT * FROM getreturnedbookstimeperiod('{begDate}', '{endDate}')";
+
+                    var command = new NpgsqlCommand(query, connection);
+                    var reader = command.ExecuteReader();
+
+                    int counter = 0;
+
+                    while (reader.Read())
+                    {
+                        counter++;
+
+                        books.Add(new Book(reader.GetString(1), reader.GetString(2),
+                            reader.GetDateTime(3)), reader.GetDateTime(4));
+                    }
+
+                    if (counter == 0)
+                        MessageBox.Show($"Не обнаружен возвращенных книг за этот период!", "Результат!",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+                var visuaLViewer = new BooksListView(books, "Дата возврата");
+                visuaLViewer.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при выполнение запроса: {ex.Message}.", "Ошибка!",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void BorrowedDates_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var editor = new DatesPickerForm();
+                editor.Show();
+
+                var begDate = editor.firstDate;
+                var endDate = editor.lastDate;
+
+                Dictionary<Book, DateTime> books = new Dictionary<Book, DateTime>();
+
+                using (var connection = new NpgsqlConnection(connectionString))
+                {
+                    connection.Open();
+                    string query = $"SELECT * FROM getborrowedbookstimeperiod('{begDate}', '{endDate}')";
+
+                    var command = new NpgsqlCommand(query, connection);
+                    var reader = command.ExecuteReader();
+
+                    int counter = 0;
+
+                    while (reader.Read())
+                    {
+                        counter++;
+
+                        books.Add(new Book(reader.GetString(1), reader.GetString(2),
+                            reader.GetDateTime(3)), reader.GetDateTime(4));
+                    }
+
+                    if (counter == 0)
+                        MessageBox.Show($"Не обнаружен взятых книг за этот период!", "Результат!",
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
+                var visuaLViewer = new BooksListView(books, "Дата взятия");
+                visuaLViewer.Show();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Ошибка при выполнение запроса: {ex.Message}.", "Ошибка!",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

@@ -177,6 +177,7 @@
             DatesReturn.TabIndex = 0;
             DatesReturn.Text = "Список книг, возвращенных за период";
             DatesReturn.UseVisualStyleBackColor = true;
+            DatesReturn.Click += DatesReturn_Click;
             // 
             // BorrowedDates
             // 
@@ -186,6 +187,7 @@
             BorrowedDates.TabIndex = 1;
             BorrowedDates.Text = "Список книг, взятых за период";
             BorrowedDates.UseVisualStyleBackColor = true;
+            BorrowedDates.Click += BorrowedDates_Click;
             // 
             // ReadersBook
             // 
