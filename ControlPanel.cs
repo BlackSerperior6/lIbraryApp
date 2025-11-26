@@ -41,10 +41,8 @@ namespace LibraryApplication
                         connection.Open();
                         string query = $"INSERT INTO \"Readers\" (\"ReaderID\", \"Last Name\", \"First Name\", " +
                             $"\"Patronymic\", \"Issued Date\") " +
-                            $"VALUES (DEFAULT, '{reader.LastName}', '{reader.Name}', '{reader.Patronymic}', " +
-                            $"'{reader.DateTime}');";
-
-                        Console.WriteLine(query);
+                            $"VALUES (DEFAULT, '{reader.LastName}', '{reader.FisrtName}', '{reader.Patronymic}', " +
+                            $"'{reader.IssuedDate}');";
 
                         var command = new NpgsqlCommand(query, connection);
                         command.ExecuteScalar();
@@ -130,8 +128,8 @@ namespace LibraryApplication
 
                 Reader receivedReader = (Reader)originalReader;
 
-                var editor = new RedactReader(receivedReader.LastName, receivedReader.Name, receivedReader.Patronymic,
-                    receivedReader.DateTime);
+                var editor = new RedactReader(receivedReader.LastName, receivedReader.FisrtName, receivedReader.Patronymic,
+                    receivedReader.IssuedDate);
 
                 if (editor.ShowDialog() == DialogResult.OK)
                 {
@@ -141,8 +139,8 @@ namespace LibraryApplication
                     {
                         connection.Open();
                         string query = $"UPDATE \"Readers\" Set \"Last Name\" = '{receivedReader.LastName}', " +
-                            $"\"First Name\" = '{receivedReader.Name}', \"Patronymic\" = '{receivedReader.Patronymic}'" +
-                            $", \"Issued Date\" = '{receivedReader.DateTime}' WHERE \"ReaderID\" = '{id}'";
+                            $"\"First Name\" = '{receivedReader.FisrtName}', \"Patronymic\" = '{receivedReader.Patronymic}'" +
+                            $", \"Issued Date\" = '{receivedReader.IssuedDate}' WHERE \"ReaderID\" = '{id}'";
 
                         var command = new NpgsqlCommand(query, connection);
                         command.ExecuteScalar();
@@ -192,8 +190,8 @@ namespace LibraryApplication
 
                 Reader receivedReader = (Reader)bufferReader;
 
-                var editor = new RedactReader(receivedReader.LastName, receivedReader.Name, receivedReader.Patronymic,
-                    receivedReader.DateTime, false);
+                var editor = new RedactReader(receivedReader.LastName, receivedReader.FisrtName, receivedReader.Patronymic,
+                    receivedReader.IssuedDate, false);
 
                 editor.Show();
             }

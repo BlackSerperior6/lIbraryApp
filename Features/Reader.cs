@@ -7,19 +7,21 @@ using System.Threading.Tasks;
 
 namespace LibraryApplication.Structs
 {
-    public struct Reader
+    public class Reader
     {
         public string LastName;
-        public string Name;
+        public string FisrtName;
         public string Patronymic;
-        public DateTime DateTime;
+        public DateTime IssuedDate;
+        public DateTime BirthDate;
 
-        public Reader(string lastName, string name, string patronymic, DateTime dateTime) 
+        public Reader(string lastName, string name, string patronymic, DateTime issuedDate, DateTime birthDate)
         {
             LastName = lastName;
-            Name = name;
+            FisrtName = name;
             Patronymic = patronymic;
-            DateTime = dateTime;
+            IssuedDate = issuedDate;
+            BirthDate = birthDate;
         }
     }
 }
