@@ -13,16 +13,13 @@ namespace LibraryApplication.BufferForms
 {
     public partial class BooksListView : Form
     {
-        public BooksListView(Dictionary<Book, (DateTime, DateTime)> books)
+        public BooksListView(Dictionary<Book, (DateTime, DateTime, ulong)> books)
         {
             InitializeComponent();
 
             foreach (var pair in books)
                 MainGrid.Rows.Add(pair.Key.Title, pair.Key.Author, pair.Key.ReleasedDate, pair.Key.ArrivalDate, pair.Value.Item1,
-                    pair.Value.Item2);
-
-            foreach (var book in books.Keys)
-                MainGrid.Rows.Add(book.Title, book.Author, book.ReleasedDate);
+                    pair.Value.Item2, pair.Value.Item3);
         }
     }
 }

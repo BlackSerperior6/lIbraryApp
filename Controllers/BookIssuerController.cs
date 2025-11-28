@@ -32,7 +32,7 @@ namespace LibraryApplication.Controllers
         }
 
         //exception - null и false, то такой записи нет
-        public static bool ReturnBook(ulong readerId, ulong bookId, DateTime returnDate,
+        public static bool ReturnBook(ulong borrowId, DateTime returnDate,
             out NpgsqlException exception)
         {
             string queue = $"UPDATE \"IssuedBooks\" Set \"Return Date\" = \"{returnDate}\"";

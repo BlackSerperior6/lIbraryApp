@@ -390,55 +390,59 @@ namespace LibraryApplication
 
         private void BorrowBook_Click(object sender, EventArgs e)
         {
-            var readerInput = Interaction.InputBox(
-                "Введите ID билета читателя:",
-                "Ввод");
+            var editor = new IssueBookForm();
 
-            if (!ulong.TryParse(readerInput, out var readerId))
+            if (editor.ShowDialog() == DialogResult.OK)
             {
-                MessageBox.Show($"{readerInput} не является валидным id номером читателя", "Ошибка!",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-                return;
-            }
+                if (!BookIssuerController.IssuedBook(editor.readerId, editor.bookId, editor.issueDate, editor.returnDate, 
+                    out var exception))
+                {
+                    if (exception == null)
+                    {
+                        MessageBox.Show($"Ошибка при выполнение запроса: {exception}", "Ошибка!",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Книга находтися в распоряжении другого читателя", "Ошибка!",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
 
-            var bookInput = Interaction.InputBox(
-                "Введите ID книги:",
-                "Ввод");
+                    return;
+                }
 
-            if (!ulong.TryParse(bookInput, out var bookId))
-            {
-                MessageBox.Show($"{bookId} не является валидным id книги", "Ошибка!",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                return;
+                MessageBox.Show($"Книга была успешно выдана читателю", "Подтверждение!",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
         private void ReturnBook_Click(object sender, EventArgs e)
         {
-            var readerInput = Interaction.InputBox(
-                "Введите ID билета читателя:",
-                "Ввод");
+            var editor = new ReturnBookForm();
 
-            if (!ulong.TryParse(readerInput, out var readerId))
+            if (editor.ShowDialog() == DialogResult.OK)
             {
-                MessageBox.Show($"{readerInput} не является валидным id номером читателя", "Ошибка!",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-                return;
-            }
+                if (!BookIssuerController.ReturnBook(editor.borrowId, editor.returnDate,
+                    out var exception))
+                {
+                    if (exception == null)
+                    {
+                        MessageBox.Show($"Ошибка при выполнение запроса: {exception}", "Ошибка!",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    else
+                    {
+                        MessageBox.Show($"Выдачи с таким id не происходило", "Ошибка!",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
 
-            var bookInput = Interaction.InputBox(
-                "Введите ID книги:",
-                "Ввод");
+                    return;
+                }
 
-            if (!ulong.TryParse(bookInput, out var bookId))
-            {
-                MessageBox.Show($"{bookId} не является валидным id книги", "Ошибка!",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-
-                return;
+                MessageBox.Show($"Книга была успешно выдана читателю", "Подтверждение!",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
     }

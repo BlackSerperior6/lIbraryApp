@@ -11,11 +11,11 @@ namespace LibraryApplication.Controllers
     public static class Informator
     {
         public static bool IssuedBooksForAReader(ulong readerId, out NpgsqlException exception, 
-            out Dictionary<Book, (DateTime, DateTime)> 
+            out Dictionary<Book, (DateTime, DateTime, ulong)> 
             books, out bool foundReader)
         {
             foundReader = false;
-            books = new Dictionary<Book, (DateTime, DateTime)>();
+            books = new Dictionary<Book, (DateTime, DateTime, ulong)>();
 
             string checkQuery = $"SELECT COUNT(*) FROM \"ReaderBase\" WHERE \"ReaderID\" == {readerId}";
 
@@ -35,6 +35,7 @@ namespace LibraryApplication.Controllers
                 $"b.\"Arrival Date\"," +
                 $"br.\"Borrow Date\"," +
                 $"br.\"Return Date Planed\"" +
+                $"br.\"BorrowID\"" +
                 $"FROM \"IssuedBooks\" br" +
                 $"INNER JOIN \"BookCatalog\" b ON br.\"BookID\" = b.\"BookId\"" +
                 $"WHERE br.\"ReaderID\" = '{readerId}'" +
@@ -46,17 +47,18 @@ namespace LibraryApplication.Controllers
             while (reader.Read())
             {
                 books.Add(new Book(reader.GetString(1), reader.GetString(2),
-                            reader.GetDateTime(3), reader.GetDateTime(4)), (reader.GetDateTime(5), reader.GetDateTime(6)));
+                            reader.GetDateTime(3), reader.GetDateTime(4)), (reader.GetDateTime(5), reader.GetDateTime(6),
+                            (ulong) reader.GetInt64(7)));
             }
 
             return true;
         }
 
         public static bool IssuedBooksForAPeriod(DateTime start, DateTime end, out NpgsqlException exception,
-            out Dictionary<Book, (DateTime, DateTime)>
+            out Dictionary<Book, (DateTime, DateTime, ulong)>
             books)
         {
-            books = new Dictionary<Book, (DateTime, DateTime)>();
+            books = new Dictionary<Book, (DateTime, DateTime, ulong)>();
 
             string query = $"SELECT" +
                 $"b.\"BookId\"," +
@@ -66,6 +68,7 @@ namespace LibraryApplication.Controllers
                 $"b.\"Arrival Date\"," +
                 $"br.\"Borrow Date\"," +
                 $"br.\"Return Date Planed\"" +
+                $"br.\"BorrowID\"" +
                 $"FROM \"IssuedBooks\" br" +
                 $"INNER JOIN \"BookCatalog\" b ON br.\"BookID\" = b.\"BookId\"" +
                 $"WHERE rb.\"Borrow Date\" BETWEEN '{start}' AND '{end}'" +
@@ -77,17 +80,18 @@ namespace LibraryApplication.Controllers
             while (reader.Read())
             {
                 books.Add(new Book(reader.GetString(1), reader.GetString(2),
-                            reader.GetDateTime(3), reader.GetDateTime(4)), (reader.GetDateTime(5), reader.GetDateTime(6)));
+                            reader.GetDateTime(3), reader.GetDateTime(4)), (reader.GetDateTime(5), reader.GetDateTime(6), 
+                            (ulong)reader.GetInt64(7)));
             }
 
             return true;
         }
 
         public static bool ReturnedBooksPeriod(DateTime start, DateTime end, out NpgsqlException exception,
-            out Dictionary<Book, (DateTime, DateTime)>
+            out Dictionary<Book, (DateTime, DateTime, ulong)>
             books)
         {
-            books = new Dictionary<Book, (DateTime, DateTime)>();
+            books = new Dictionary<Book, (DateTime, DateTime, ulong)>();
 
             string query = $"SELECT" +
                 $"b.\"BookId\"," +
@@ -97,6 +101,7 @@ namespace LibraryApplication.Controllers
                 $"b.\"Arrival Date\"," +
                 $"br.\"Borrow Date\"," +
                 $"br.\"Return Date\"" +
+                $"br.\"BorrowID\"" +
                 $"FROM \"IssuedBooks\" br" +
                 $"INNER JOIN \"BookCatalog\" b ON br.\"BookID\" = b.\"BookId\"" +
                 $"WHERE rb.\"Return Date\" BETWEEN '{start}' AND '{end}'" +
@@ -108,7 +113,8 @@ namespace LibraryApplication.Controllers
             while (reader.Read())
             {
                 books.Add(new Book(reader.GetString(1), reader.GetString(2),
-                            reader.GetDateTime(3), reader.GetDateTime(4)), (reader.GetDateTime(5), reader.GetDateTime(6)));
+                            reader.GetDateTime(3), reader.GetDateTime(4)), (reader.GetDateTime(5), reader.GetDateTime(6), 
+                            (ulong) reader.GetInt64(7)));
             }
 
             return true;

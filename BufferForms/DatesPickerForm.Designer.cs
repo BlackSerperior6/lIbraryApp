@@ -54,18 +54,18 @@
             label1.AutoSize = true;
             label1.Location = new Point(12, 22);
             label1.Name = "label1";
-            label1.Size = new Size(93, 15);
+            label1.Size = new Size(74, 15);
             label1.TabIndex = 2;
-            label1.Text = "Начальная дата";
+            label1.Text = "Дата начала";
             // 
             // label2
             // 
             label2.AutoSize = true;
             label2.Location = new Point(12, 51);
             label2.Name = "label2";
-            label2.Size = new Size(86, 15);
+            label2.Size = new Size(68, 15);
             label2.TabIndex = 3;
-            label2.Text = "Конечная дата";
+            label2.Text = "Дата конца";
             // 
             // OkButton
             // 

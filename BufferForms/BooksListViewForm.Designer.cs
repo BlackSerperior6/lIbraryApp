@@ -35,16 +35,17 @@
             ColumnArrival = new DataGridViewTextBoxColumn();
             ColumnBorrowDate = new DataGridViewTextBoxColumn();
             ColumnDateReturn = new DataGridViewTextBoxColumn();
+            BorrowIdColumn = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)MainGrid).BeginInit();
             SuspendLayout();
             // 
             // MainGrid
             // 
             MainGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            MainGrid.Columns.AddRange(new DataGridViewColumn[] { Title, Author, ReleaseDate, ColumnArrival, ColumnBorrowDate, ColumnDateReturn });
+            MainGrid.Columns.AddRange(new DataGridViewColumn[] { Title, Author, ReleaseDate, ColumnArrival, ColumnBorrowDate, ColumnDateReturn, BorrowIdColumn });
             MainGrid.Location = new Point(0, -1);
             MainGrid.Name = "MainGrid";
-            MainGrid.Size = new Size(642, 529);
+            MainGrid.Size = new Size(737, 529);
             MainGrid.TabIndex = 0;
             // 
             // Title
@@ -83,11 +84,17 @@
             ColumnDateReturn.Name = "ColumnDateReturn";
             ColumnDateReturn.ReadOnly = true;
             // 
+            // BorrowIdColumn
+            // 
+            BorrowIdColumn.HeaderText = "ID взятия книги";
+            BorrowIdColumn.Name = "BorrowIdColumn";
+            BorrowIdColumn.ReadOnly = true;
+            // 
             // BooksListView
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(642, 524);
+            ClientSize = new Size(738, 524);
             Controls.Add(MainGrid);
             Name = "BooksListView";
             Text = "Показ данных";
@@ -104,5 +111,6 @@
         private DataGridViewTextBoxColumn ColumnArrival;
         private DataGridViewTextBoxColumn ColumnBorrowDate;
         private DataGridViewTextBoxColumn ColumnDateReturn;
+        private DataGridViewTextBoxColumn BorrowIdColumn;
     }
 }
