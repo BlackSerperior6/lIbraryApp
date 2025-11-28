@@ -26,7 +26,7 @@ namespace LibraryApplication.Controllers
             return DataBaseClient.ExecuteDelete(query, out exception, out affectedRows);
         }
 
-        public static bool SeeInfoAboutReader(ulong id, out NpgsqlException exception, out NpgsqlDataReader reader)
+        public static bool GetInfoAboutReader(ulong id, out NpgsqlException exception, out NpgsqlDataReader reader)
         {
             string query = $"SELECT * FROM \"ReaderBase\" WHERE \"ReaderID\" = '{id}'";
             return DataBaseClient.ExecuteSelect(query, out exception, out reader);

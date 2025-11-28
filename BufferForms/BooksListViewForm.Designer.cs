@@ -32,17 +32,19 @@
             Title = new DataGridViewTextBoxColumn();
             Author = new DataGridViewTextBoxColumn();
             ReleaseDate = new DataGridViewTextBoxColumn();
-            Addtional = new DataGridViewTextBoxColumn();
+            ColumnArrival = new DataGridViewTextBoxColumn();
+            ColumnBorrowDate = new DataGridViewTextBoxColumn();
+            ColumnDateReturn = new DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)MainGrid).BeginInit();
             SuspendLayout();
             // 
             // MainGrid
             // 
             MainGrid.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            MainGrid.Columns.AddRange(new DataGridViewColumn[] { Title, Author, ReleaseDate, Addtional });
+            MainGrid.Columns.AddRange(new DataGridViewColumn[] { Title, Author, ReleaseDate, ColumnArrival, ColumnBorrowDate, ColumnDateReturn });
             MainGrid.Location = new Point(0, -1);
             MainGrid.Name = "MainGrid";
-            MainGrid.Size = new Size(499, 529);
+            MainGrid.Size = new Size(642, 529);
             MainGrid.TabIndex = 0;
             // 
             // Title
@@ -63,16 +65,29 @@
             ReleaseDate.Name = "ReleaseDate";
             ReleaseDate.ReadOnly = true;
             // 
-            // Addtional
+            // ColumnArrival
             // 
-            Addtional.HeaderText = "Доп";
-            Addtional.Name = "Addtional";
+            ColumnArrival.HeaderText = "Дата поступления";
+            ColumnArrival.Name = "ColumnArrival";
+            ColumnArrival.ReadOnly = true;
+            // 
+            // ColumnBorrowDate
+            // 
+            ColumnBorrowDate.HeaderText = "Дата взятия";
+            ColumnBorrowDate.Name = "ColumnBorrowDate";
+            ColumnBorrowDate.ReadOnly = true;
+            // 
+            // ColumnDateReturn
+            // 
+            ColumnDateReturn.HeaderText = "Дата возвращения";
+            ColumnDateReturn.Name = "ColumnDateReturn";
+            ColumnDateReturn.ReadOnly = true;
             // 
             // BooksListView
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(498, 524);
+            ClientSize = new Size(642, 524);
             Controls.Add(MainGrid);
             Name = "BooksListView";
             Text = "Показ данных";
@@ -86,6 +101,8 @@
         private DataGridViewTextBoxColumn Title;
         private DataGridViewTextBoxColumn Author;
         private DataGridViewTextBoxColumn ReleaseDate;
-        private DataGridViewTextBoxColumn Addtional;
+        private DataGridViewTextBoxColumn ColumnArrival;
+        private DataGridViewTextBoxColumn ColumnBorrowDate;
+        private DataGridViewTextBoxColumn ColumnDateReturn;
     }
 }

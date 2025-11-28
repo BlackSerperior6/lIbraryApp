@@ -12,9 +12,20 @@ namespace LibraryApplication.Controllers
     {
         public static bool IssuedBooksForAReader(ulong readerId, out NpgsqlException exception, 
             out Dictionary<Book, (DateTime, DateTime)> 
-            books)
+            books, out bool foundReader)
         {
+            foundReader = false;
             books = new Dictionary<Book, (DateTime, DateTime)>();
+
+            string checkQuery = $"SELECT COUNT(*) FROM \"ReaderBase\" WHERE \"ReaderID\" == {readerId}";
+
+            if (!DataBaseClient.ExecuteSelect(checkQuery, out exception, out var firstReader))
+                return false;
+
+            foundReader = firstReader.Read();
+
+            if (!foundReader) 
+                return false;
 
             string query = $"SELECT" +
                 $"b.\"BookId\"," +
@@ -91,9 +102,7 @@ namespace LibraryApplication.Controllers
                 $"WHERE rb.\"Return Date\" BETWEEN '{start}' AND '{end}'" +
                 $"ORDER BY br.\"Borrow Date\" DESC;";
 
-            bool result = DataBaseClient.ExecuteSelect(query, out exception, out var reader);
-
-            if (!result)
+            if (!DataBaseClient.ExecuteSelect(query, out exception, out var reader))
                 return false;
 
             while (reader.Read())

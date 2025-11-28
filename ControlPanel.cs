@@ -1,4 +1,5 @@
 ﻿using LibraryApplication.BufferForms;
+using LibraryApplication.Controllers;
 using LibraryApplication.InputForms;
 using LibraryApplication.Structs;
 using Microsoft.VisualBasic;
@@ -14,6 +15,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
 using System.Windows.Forms;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace LibraryApplication
 {
@@ -28,436 +30,415 @@ namespace LibraryApplication
 
         private void AddReader_Click(object sender, EventArgs e)
         {
-            try
-            {
-                var editor = new RedactReader();
+            var editor = new RedactReader(null);
 
-                if (editor.ShowDialog() == DialogResult.OK)
+            if (editor.ShowDialog() == DialogResult.OK)
+            {
+                Reader reader = editor.result;
+
+                if (!ReaderBaseController.AddReader(reader, out var exception))
                 {
-                    Reader reader = editor.result;
+                    MessageBox.Show($"Ошибка при выполнение запроса: {exception}", "Ошибка!",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-                    using (var connection = new NpgsqlConnection(connectionString))
-                    {
-                        connection.Open();
-                        string query = $"INSERT INTO \"Readers\" (\"ReaderID\", \"Last Name\", \"First Name\", " +
-                            $"\"Patronymic\", \"Issued Date\") " +
-                            $"VALUES (DEFAULT, '{reader.LastName}', '{reader.FirstName}', '{reader.Patronymic}', " +
-                            $"'{reader.IssuedDate}');";
-
-                        var command = new NpgsqlCommand(query, connection);
-                        command.ExecuteScalar();
-
-                        MessageBox.Show($"Читаель был добавлен в базу", "Подтверждение!",
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
+                    return;
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка при выполнение запроса: {ex.Message}", "Ошибка!",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                MessageBox.Show($"Читатель был успешно добавлен", "Подтверждение!",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
         private void DeleteReader_Click(object sender, EventArgs e)
         {
-            try
-            {
-                var result = Interaction.InputBox(
+            var result = Interaction.InputBox(
                 "Введите ID билета читателя:",
                 "Ввод");
 
-                using (var connection = new NpgsqlConnection(connectionString))
-                {
-                    connection.Open();
-                    string query = $"DELETE FROM \"Readers\" WHERE \"ReaderID\" = '{result}'";
-
-                    var command = new NpgsqlCommand(query, connection);
-                    int affected = command.ExecuteNonQuery();
-
-                    if (affected == 0)
-                        MessageBox.Show($"Не существует читателя с таким id билета!", "Ошибка", MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
-                    else
-                        MessageBox.Show($"Читатель был удален из базы!", "Подтверждение!",
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-            catch (Exception ex)
+            if (!ulong.TryParse(result, out var id))
             {
-                MessageBox.Show($"Ошибка при выполнение запроса: {ex.Message}", "Ошибка!",
+                MessageBox.Show($"{result} не является валидным id номером читателя", "Ошибка!",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return;
             }
+
+            if (!ReaderBaseController.RemoveReader(id, out var exception, out int affectedRows))
+            {
+                MessageBox.Show($"Ошибка при выполнение запроса: {exception}", "Ошибка!",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return;
+            }
+
+            if (affectedRows <= 0)
+            {
+                MessageBox.Show($"Читателя с таким id не обнаружено: {exception}", "Ошибка!",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return;
+            }
+
+            MessageBox.Show($"Читатель был успешно удален", "Подтверждение!",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void RedactReader_Click(object sender, EventArgs e)
         {
-            try
-            {
-                var id = Interaction.InputBox(
+            var result = Interaction.InputBox(
                 "Введите ID билета читателя:",
                 "Ввод");
 
-                Reader? originalReader = null;
+            if (!ulong.TryParse(result, out var id))
+            {
+                MessageBox.Show($"{result} не является валидным id номером читателя", "Ошибка!",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-                using (var connection = new NpgsqlConnection(connectionString))
+                return;
+            }
+
+            if (!ReaderBaseController.GetInfoAboutReader(id, out var exception, out var dbReader))
+            {
+                MessageBox.Show($"Ошибка при выполнение первого запроса: {exception}", "Ошибка!",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return;
+            }
+
+            if (!dbReader.Read())
+            {
+                MessageBox.Show($"Читатель с указанным id не найден!", "Ошибка!",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return;
+            }
+
+            var currentReader = new Reader(dbReader.GetString(1), dbReader.GetString(2),
+                            dbReader.GetString(3), dbReader.GetDateTime(4), dbReader.GetDateTime(5));
+
+            var editor = new RedactReader(currentReader);
+
+            if (editor.ShowDialog() == DialogResult.OK)
+            {
+                currentReader = editor.result;
+
+                if (ReaderBaseController.UpdateReader(id, currentReader, out exception))
                 {
-                    connection.Open();
-                    string query = $"SELECT * FROM \"Readers\" WHERE \"ReaderID\" = '{id}'";
-
-                    var command = new NpgsqlCommand(query, connection);
-                    var reader = command.ExecuteReader();
-
-                    Console.WriteLine(query);
-
-                    if (reader.Read())
-                    {
-                        originalReader = new Reader(reader.GetString(1), reader.GetString(2),
-                            reader.GetString(3), reader.GetDateTime(4));
-                    }
-
-                }
-
-                if (originalReader == null)
-                {
-                    MessageBox.Show($"Не существует читателя с таким id билета!", "Ошибка", MessageBoxButtons.OK,
-                       MessageBoxIcon.Error);
+                    MessageBox.Show($"Ошибка при выполнение второго запроса: {exception}", "Ошибка!",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                     return;
                 }
 
-                Reader receivedReader = (Reader)originalReader;
-
-                var editor = new RedactReader(receivedReader.LastName, receivedReader.FirstName, receivedReader.Patronymic,
-                    receivedReader.IssuedDate);
-
-                if (editor.ShowDialog() == DialogResult.OK)
-                {
-                    receivedReader = editor.result;
-
-                    using (var connection = new NpgsqlConnection(connectionString))
-                    {
-                        connection.Open();
-                        string query = $"UPDATE \"Readers\" Set \"Last Name\" = '{receivedReader.LastName}', " +
-                            $"\"First Name\" = '{receivedReader.FirstName}', \"Patronymic\" = '{receivedReader.Patronymic}'" +
-                            $", \"Issued Date\" = '{receivedReader.IssuedDate}' WHERE \"ReaderID\" = '{id}'";
-
-                        var command = new NpgsqlCommand(query, connection);
-                        command.ExecuteScalar();
-
-                        MessageBox.Show($"Читатель был успешно отредактирован", "Подтверждение!",
+                MessageBox.Show($"Читатель был успешно изменен", "Подтверждение!",
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка при выполнение запроса: {ex.Message}", "Ошибка!",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void InfoReader_Click(object sender, EventArgs e)
         {
-            try
-            {
-                var id = Interaction.InputBox(
+            var result = Interaction.InputBox(
                 "Введите ID билета читателя:",
                 "Ввод");
 
-                Reader? bufferReader = null;
-
-                using (var connection = new NpgsqlConnection(connectionString))
-                {
-                    connection.Open();
-                    string query = $"SELECT * FROM \"Readers\" WHERE \"ReaderID\" = '{id}'";
-
-                    var command = new NpgsqlCommand(query, connection);
-                    var reader = command.ExecuteReader();
-
-                    if (reader.Read())
-                        bufferReader = new Reader(reader.GetString(1), reader.GetString(2),
-                            reader.GetString(3), reader.GetDateTime(4));
-                }
-
-                if (bufferReader == null)
-                {
-                    MessageBox.Show($"Не существует читателя с таким id билета!", "Ошибка", MessageBoxButtons.OK,
-                       MessageBoxIcon.Error);
-
-                    return;
-                }
-
-                Reader receivedReader = (Reader)bufferReader;
-
-                var editor = new RedactReader(receivedReader.LastName, receivedReader.FirstName, receivedReader.Patronymic,
-                    receivedReader.IssuedDate, false);
-
-                editor.Show();
-            }
-            catch (Exception ex)
+            if (!ulong.TryParse(result, out var id))
             {
-                MessageBox.Show($"Ошибка при выполнение запроса: {ex.Message}", "Ошибка!",
+                MessageBox.Show($"{result} не является валидным id номером читателя", "Ошибка!",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return;
             }
+
+            if (!ReaderBaseController.GetInfoAboutReader(id, out var exception, out var dbReader))
+            {
+                MessageBox.Show($"Ошибка при выполнение первого запроса: {exception}", "Ошибка!",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return;
+            }
+
+            if (!dbReader.Read())
+            {
+                MessageBox.Show($"Читатель с указанным id не найден!", "Ошибка!",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return;
+            }
+
+            var currentReader = new Reader(dbReader.GetString(1), dbReader.GetString(2),
+                            dbReader.GetString(3), dbReader.GetDateTime(4), dbReader.GetDateTime(5));
+
+            var editor = new RedactReader(currentReader, false);
         }
 
         private void AddBook_Click(object sender, EventArgs e)
         {
-            try
-            {
-                var editor = new RedactBook();
+            var editor = new RedactBook(null);
 
-                if (editor.ShowDialog() == DialogResult.OK)
+            if (editor.ShowDialog() == DialogResult.OK)
+            {
+                Book book = editor.result;
+
+                if (!BookCatalogController.AddBook(book, out var exception))
                 {
-                    Book book = editor.result;
+                    MessageBox.Show($"Ошибка при выполнение запроса: {exception}", "Ошибка!",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-                    using (var connection = new NpgsqlConnection(connectionString))
-                    {
-                        connection.Open();
-                        string query = $"INSERT INTO \"Books\" (\"BookId\", \"Title\", \"Author\", \"Release Date\") " +
-                            $"VALUES (DEFAULT, '{book.Title}', '{book.Author}', '{book.ReleasedDate}');";
-
-                        var command = new NpgsqlCommand(query, connection);
-                        command.ExecuteScalar();
-
-                        MessageBox.Show($"Книга была добавлена в базу", "Подтверждение!",
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
+                    return;
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка при выполнение запроса: {ex.Message}", "Ошибка!",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                MessageBox.Show($"Книга была успешно добавлена", "Подтверждение!",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
         private void RemoveBook_Click(object sender, EventArgs e)
         {
-            try
-            {
-                var result = Interaction.InputBox(
-                "Введите ID книги:",
+            var result = Interaction.InputBox(
+                "Введите ID билета читателя:",
                 "Ввод");
 
-                using (var connection = new NpgsqlConnection(connectionString))
-                {
-                    connection.Open();
-                    string query = $"DELETE FROM \"Books\" WHERE \"BookId\" = '{result}'";
-
-                    var command = new NpgsqlCommand(query, connection);
-                    int affected = command.ExecuteNonQuery();
-
-                    if (affected == 0)
-                        MessageBox.Show($"Не существует книги с таким id!", "Ошибка", MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
-                    else
-                        MessageBox.Show($"Книга была удалена из базы!", "Подтверждение!",
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-            catch (Exception ex)
+            if (!ulong.TryParse(result, out var id))
             {
-                MessageBox.Show($"Ошибка при выполнение запроса: {ex.Message}", "Ошибка!",
+                MessageBox.Show($"{result} не является валидным id номером читателя", "Ошибка!",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return;
             }
+
+            if (!BookCatalogController.RemoveBook(id, out var exception, out int affectedRows))
+            {
+                MessageBox.Show($"Ошибка при выполнение запроса: {exception}", "Ошибка!",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return;
+            }
+
+            if (affectedRows <= 0)
+            {
+                MessageBox.Show($"Книги с таким id не обнаружено: {exception}", "Ошибка!",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return;
+            }
+
+            MessageBox.Show($"Книга была успешно удалена", "Подтверждение!",
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void RedactBook_Click(object sender, EventArgs e)
         {
-            try
-            {
-                var id = Interaction.InputBox(
-                "Введите ID книги:",
+            var result = Interaction.InputBox(
+                "Введите ID билета читателя:",
                 "Ввод");
 
-                Book? originalBook = null;
+            if (!ulong.TryParse(result, out var id))
+            {
+                MessageBox.Show($"{result} не является валидным id номером читателя", "Ошибка!",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
 
-                using (var connection = new NpgsqlConnection(connectionString))
+                return;
+            }
+
+            if (!BookCatalogController.GetInfoAboutBook(id, out var exception, out var dbReader))
+            {
+                MessageBox.Show($"Ошибка при выполнение первого запроса: {exception}", "Ошибка!",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return;
+            }
+
+            if (!dbReader.Read())
+            {
+                MessageBox.Show($"Книга с указанным id не найдена!", "Ошибка!",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return;
+            }
+
+            var currentBook = new Book(dbReader.GetString(1), dbReader.GetString(2),
+                            dbReader.GetDateTime(3), dbReader.GetDateTime(4));
+
+            var editor = new RedactBook(currentBook);
+
+            if (editor.ShowDialog() == DialogResult.OK)
+            {
+                currentBook = editor.result;
+
+                if (!BookCatalogController.UpdateBook(id, currentBook, out exception))
                 {
-                    connection.Open();
-                    string query = $"SELECT * FROM \"Books\" WHERE \"BooksId\" = '{id}'";
-
-                    var command = new NpgsqlCommand(query, connection);
-                    var reader = command.ExecuteReader();
-
-                    if (reader.Read())
-                    {
-                        originalBook = new Book(reader.GetString(1), reader.GetString(2),
-                            reader.GetDateTime(3));
-                    }
-
-                }
-
-                if (originalBook == null)
-                {
-                    MessageBox.Show($"Не существует книги с таким id!", "Ошибка", MessageBoxButtons.OK,
-                       MessageBoxIcon.Error);
+                    MessageBox.Show($"Ошибка при выполнение второго запроса: {exception}", "Ошибка!",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                     return;
                 }
 
-                Book receivedBook = (Book)originalBook;
-
-                var editor = new RedactBook(receivedBook.Title, receivedBook.Author, receivedBook.ReleasedDate);
-
-                if (editor.ShowDialog() == DialogResult.OK)
-                {
-                    receivedBook = editor.result;
-
-                    using (var connection = new NpgsqlConnection(connectionString))
-                    {
-                        connection.Open();
-                        string query = $"UPDATE \"Books\" Set \"Title\" = '{receivedBook.Title}', " +
-                            $"\"Author\" = '{receivedBook.Author}', \"Release Date\" = '{receivedBook.ReleasedDate}'";
-
-                        var command = new NpgsqlCommand(query, connection);
-                        command.ExecuteScalar();
-
-                        MessageBox.Show($"Книга была успешно отредактирована", "Подтверждение!",
+                MessageBox.Show($"Книга была успешно изменена", "Подтверждение!",
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка при выполнение запроса: {ex.Message}", "Ошибка!",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void InfoBook_Click(object sender, EventArgs e)
         {
-            try
-            {
-                var id = Interaction.InputBox(
-                "Введите ID книги:",
+            var result = Interaction.InputBox(
+                "Введите ID билета читателя:",
                 "Ввод");
 
-                Book? bufferBook = null;
-
-                using (var connection = new NpgsqlConnection(connectionString))
-                {
-                    connection.Open();
-                    string query = $"SELECT * FROM \"Books\" WHERE \"BookId\" = '{id}'";
-
-                    var command = new NpgsqlCommand(query, connection);
-                    var reader = command.ExecuteReader();
-
-                    if (reader.Read())
-                        bufferBook = new Book(reader.GetString(1), reader.GetString(2),
-                            reader.GetDateTime(3));
-                }
-
-                if (bufferBook == null)
-                {
-                    MessageBox.Show($"Не существует читателя с таким id билета!", "Ошибка", MessageBoxButtons.OK,
-                       MessageBoxIcon.Error);
-
-                    return;
-                }
-
-                Book receivedBook = (Book)bufferBook;
-
-                var editor = new RedactBook(receivedBook.Title, receivedBook.Author, receivedBook.ReleasedDate, false);
-
-                editor.Show();
-            }
-            catch (Exception ex)
+            if (!ulong.TryParse(result, out var id))
             {
-                MessageBox.Show($"Ошибка при выполнение запроса: {ex.Message}", "Ошибка!",
+                MessageBox.Show($"{result} не является валидным id номером читателя", "Ошибка!",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return;
             }
+
+            if (!BookCatalogController.GetInfoAboutBook(id, out var exception, out var dbReader))
+            {
+                MessageBox.Show($"Ошибка при выполнение запроса: {exception}", "Ошибка!",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return;
+            }
+
+            if (!dbReader.Read())
+            {
+                MessageBox.Show($"Книга с указанным id не найдена!", "Ошибка!",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return;
+            }
+
+            var currentBook = new Book(dbReader.GetString(1), dbReader.GetString(2),
+                            dbReader.GetDateTime(3), dbReader.GetDateTime(4));
+
+            var editor = new RedactBook(currentBook, false);
         }
 
         private void DatesReturn_Click(object sender, EventArgs e)
         {
-            try
-            {
-                var editor = new DatesPickerForm();
-                editor.Show();
+            var editor = new DatesPickerForm();
 
+            if (editor.ShowDialog() == DialogResult.OK)
+            {
                 var begDate = editor.firstDate;
                 var endDate = editor.lastDate;
 
-                Dictionary<Book, DateTime> books = new Dictionary<Book, DateTime>();
-
-                using (var connection = new NpgsqlConnection(connectionString))
+                if (!Informator.ReturnedBooksPeriod(begDate, endDate, out var exception, out var books))
                 {
-                    connection.Open();
-                    string query = $"SELECT * FROM getreturnedbookstimeperiod('{begDate}', '{endDate}')";
-
-                    var command = new NpgsqlCommand(query, connection);
-                    var reader = command.ExecuteReader();
-
-                    int counter = 0;
-
-                    while (reader.Read())
-                    {
-                        counter++;
-
-                        books.Add(new Book(reader.GetString(1), reader.GetString(2),
-                            reader.GetDateTime(3)), reader.GetDateTime(4));
-                    }
-
-                    if (counter == 0)
-                        MessageBox.Show($"Не обнаружен возвращенных книг за этот период!", "Результат!",
-                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"Ошибка при выполнение запроса: {exception}", "Ошибка!",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
 
-                var visuaLViewer = new BooksListView(books, "Дата возврата");
+                var visuaLViewer = new BooksListView(books);
                 visuaLViewer.Show();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Ошибка при выполнение запроса: {ex.Message}.", "Ошибка!",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void BorrowedDates_Click(object sender, EventArgs e)
         {
-            try
-            {
-                var editor = new DatesPickerForm();
-                editor.Show();
+            var editor = new DatesPickerForm();
 
+            if (editor.ShowDialog() == DialogResult.OK)
+            {
                 var begDate = editor.firstDate;
                 var endDate = editor.lastDate;
 
-                Dictionary<Book, DateTime> books = new Dictionary<Book, DateTime>();
-
-                using (var connection = new NpgsqlConnection(connectionString))
+                if (!Informator.IssuedBooksForAPeriod(begDate, endDate, out var exception, out var books))
                 {
-                    connection.Open();
-                    string query = $"SELECT * FROM getborrowedbookstimeperiod('{begDate}', '{endDate}')";
-
-                    var command = new NpgsqlCommand(query, connection);
-                    var reader = command.ExecuteReader();
-
-                    int counter = 0;
-
-                    while (reader.Read())
-                    {
-                        counter++;
-
-                        books.Add(new Book(reader.GetString(1), reader.GetString(2),
-                            reader.GetDateTime(3)), reader.GetDateTime(4));
-                    }
-
-                    if (counter == 0)
-                        MessageBox.Show($"Не обнаружен взятых книг за этот период!", "Результат!",
-                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    MessageBox.Show($"Ошибка при выполнение запроса: {exception}", "Ошибка!",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
 
-                var visuaLViewer = new BooksListView(books, "Дата взятия");
+                var visuaLViewer = new BooksListView(books);
                 visuaLViewer.Show();
             }
-            catch (Exception ex)
+        }
+
+        private void ReadersBook_Click(object sender, EventArgs e)
+        {
+            var result = Interaction.InputBox(
+                "Введите ID билета читателя:",
+                "Ввод");
+
+            if (!ulong.TryParse(result, out var id))
             {
-                MessageBox.Show($"Ошибка при выполнение запроса: {ex.Message}.", "Ошибка!",
+                MessageBox.Show($"{result} не является валидным id номером читателя", "Ошибка!",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return;
+            }
+
+            if (!Informator.IssuedBooksForAReader(id, out var exception, out var books, out var foundReader))
+            {
+                if (foundReader)
+                {
+                    MessageBox.Show($"Читателя с таким id не существует!", "Ошибка!",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                else
+                {
+                    MessageBox.Show($"Ошибка при выполнение запроса: {exception}", "Ошибка!",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+                return;
+            }
+
+            var visuaLViewer = new BooksListView(books);
+            visuaLViewer.Show();
+        }
+
+        private void BorrowBook_Click(object sender, EventArgs e)
+        {
+            var readerInput = Interaction.InputBox(
+                "Введите ID билета читателя:",
+                "Ввод");
+
+            if (!ulong.TryParse(readerInput, out var readerId))
+            {
+                MessageBox.Show($"{readerInput} не является валидным id номером читателя", "Ошибка!",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return;
+            }
+
+            var bookInput = Interaction.InputBox(
+                "Введите ID книги:",
+                "Ввод");
+
+            if (!ulong.TryParse(bookInput, out var bookId))
+            {
+                MessageBox.Show($"{bookId} не является валидным id книги", "Ошибка!",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return;
+            }
+        }
+
+        private void ReturnBook_Click(object sender, EventArgs e)
+        {
+            var readerInput = Interaction.InputBox(
+                "Введите ID билета читателя:",
+                "Ввод");
+
+            if (!ulong.TryParse(readerInput, out var readerId))
+            {
+                MessageBox.Show($"{readerInput} не является валидным id номером читателя", "Ошибка!",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return;
+            }
+
+            var bookInput = Interaction.InputBox(
+                "Введите ID книги:",
+                "Ввод");
+
+            if (!ulong.TryParse(bookInput, out var bookId))
+            {
+                MessageBox.Show($"{bookId} не является валидным id книги", "Ошибка!",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                return;
             }
         }
     }

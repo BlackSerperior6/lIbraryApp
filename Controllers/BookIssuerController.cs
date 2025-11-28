@@ -10,6 +10,7 @@ namespace LibraryApplication.Controllers
 {
     public static class BookIssuerController
     {
+        //exception - null и false, то книга занята
         public static bool IssuedBook(ulong readerId, ulong bookId, DateTime issueDate, DateTime plannedReturnDate, 
             out NpgsqlException exception)
         {
@@ -30,6 +31,7 @@ namespace LibraryApplication.Controllers
             return DataBaseClient.ExecuteInsertOrUpdate(secondQueue, out exception, out _);
         }
 
+        //exception - null и false, то такой записи нет
         public static bool ReturnBook(ulong readerId, ulong bookId, DateTime returnDate,
             out NpgsqlException exception)
         {

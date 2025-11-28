@@ -16,20 +16,28 @@ namespace LibraryApplication.InputForms
         public Reader result;
         private readonly bool _editable;
 
-        public RedactReader(string lastName = "", string firstName = "", string patronymic = "", 
-            DateTime? issuedDate = null, bool editable = true)
+        public RedactReader(Reader? reader, bool editable = true)
         {
             InitializeComponent();
 
-            LastName.Text = lastName;
-            FirstName.Text = firstName;
-            Patronymic.Text = patronymic;
-            _editable = editable;
-
-            if (issuedDate != null)
-                IssuedDate.Value = (DateTime)issuedDate;
-            else
+            if (reader == null)
+            {
+                LastName.Text = "";
+                FirstName.Text = "";
+                Patronymic.Text = "";
                 IssuedDate.Value = DateTime.Now;
+                BirthdayPicker.Value = DateTime.Now;
+            }
+            else 
+            {
+                LastName.Text = reader?.LastName;
+                FirstName.Text = reader?.FirstName;
+                Patronymic.Text = reader?.Patronymic;
+                IssuedDate.Value = reader.IssuedDate;
+                BirthdayPicker.Value = reader.BirthDate;
+            }
+
+            _editable = editable;
 
             if (!_editable)
             {
@@ -37,8 +45,10 @@ namespace LibraryApplication.InputForms
                 FirstName.ReadOnly = true;
                 Patronymic.ReadOnly = true;
                 IssuedDate.Enabled = false;
+                BirthdayPicker.Enabled = false;
 
                 IssuedDate.BackColor = Color.White;
+                BirthdayPicker.BackColor = Color.White;
             }
         }
 
@@ -54,10 +64,10 @@ namespace LibraryApplication.InputForms
                     return;
                 }
 
-                result = new Reader(LastName.Text, FirstName.Text, Patronymic.Text, IssuedDate.Value);
+                result = new Reader(LastName.Text, FirstName.Text, Patronymic.Text, IssuedDate.Value, BirthdayPicker.Value);
                 DialogResult = DialogResult.OK;
             }
-            
+
             Close();
         }
     }

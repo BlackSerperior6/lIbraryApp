@@ -13,26 +13,16 @@ namespace LibraryApplication.BufferForms
 {
     public partial class BooksListView : Form
     {
-        public BooksListView(Dictionary<Book, DateTime> books, string additionalColumnHeader, 
-            bool lastColumnExists = true)
+        public BooksListView(Dictionary<Book, (DateTime, DateTime)> books)
         {
             InitializeComponent();
 
-            if (lastColumnExists)
-            {
-                foreach (var book in books)
-                    MainGrid.Rows.Add(book.Key.Title, book.Key.Author, book.Key.ReleasedDate, book.Value);
+            foreach (var pair in books)
+                MainGrid.Rows.Add(pair.Key.Title, pair.Key.Author, pair.Key.ReleasedDate, pair.Key.ArrivalDate, pair.Value.Item1,
+                    pair.Value.Item2);
 
-                MainGrid.Columns[^1].HeaderText = additionalColumnHeader;
-            }
-            else 
-            {
-                MainGrid.Columns.Remove(MainGrid.Columns[^1]);
-
-                foreach (var book in books.Keys)
-                    MainGrid.Rows.Add(book.Title, book.Author, book.ReleasedDate);
-            }
-            
+            foreach (var book in books.Keys)
+                MainGrid.Rows.Add(book.Title, book.Author, book.ReleasedDate);
         }
     }
 }

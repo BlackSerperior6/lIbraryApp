@@ -16,16 +16,24 @@ namespace LibraryApplication.InputForms
         public Book result;
         private bool _editable;
 
-        public RedactBook(string title = "", string author = "", DateTime? releaseDate = null, bool editable = true)
+        public RedactBook(Book? book, bool editable = true)
         {
             InitializeComponent();
-            Title.Text = title;
-            Author.Text = author;
 
-            if (releaseDate != null)
-                ReleaseDate.Value = (DateTime) releaseDate;
-            else
+            if (book == null)
+            {
+                Title.Text = "";
+                Author.Text = "";
                 ReleaseDate.Value = DateTime.Now;
+                ArrivalDate.Value = DateTime.Now;
+            }
+            else 
+            {
+                Title.Text = book.Title;
+                Author.Text = book.Author;
+                ReleaseDate.Value = book.ReleasedDate;
+                ArrivalDate.Value = book.ArrivalDate;
+            }
 
             _editable = editable;
 
@@ -34,8 +42,10 @@ namespace LibraryApplication.InputForms
                 Title.ReadOnly = true;
                 Author.ReadOnly = true;
                 ReleaseDate.Enabled = false;
+                ArrivalDate.Enabled = false;
 
                 ReleaseDate.BackColor = Color.White;
+                ArrivalDate.BackColor = Color.White;
             }
         }
 
@@ -48,7 +58,7 @@ namespace LibraryApplication.InputForms
                 return;
             }
 
-            result = new Book(Title.Text, Author.Text, ReleaseDate.Value);
+            result = new Book(Title.Text, Author.Text, ReleaseDate.Value, ArrivalDate.Value);
             DialogResult = DialogResult.OK;
             Close();
         }

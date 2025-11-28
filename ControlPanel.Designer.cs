@@ -197,6 +197,7 @@
             ReadersBook.TabIndex = 2;
             ReadersBook.Text = "Список книг у читателя";
             ReadersBook.UseVisualStyleBackColor = true;
+            ReadersBook.Click += ReadersBook_Click;
             // 
             // groupBox4
             // 
@@ -217,6 +218,7 @@
             BorrowBook.TabIndex = 3;
             BorrowBook.Text = "Выдать книгу читателю";
             BorrowBook.UseVisualStyleBackColor = true;
+            BorrowBook.Click += BorrowBook_Click;
             // 
             // ReturnBook
             // 
@@ -226,6 +228,7 @@
             ReturnBook.TabIndex = 4;
             ReturnBook.Text = "Вернуит книгу от читателя";
             ReturnBook.UseVisualStyleBackColor = true;
+            ReturnBook.Click += ReturnBook_Click;
             // 
             // ControlPanel
             // 

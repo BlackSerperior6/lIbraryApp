@@ -39,6 +39,8 @@ namespace LibraryApplication.InputForms
             PatronymicLabel = new Label();
             label4 = new Label();
             Ok = new Button();
+            label1 = new Label();
+            BirthdayPicker = new DateTimePicker();
             SuspendLayout();
             // 
             // IssuedDate
@@ -107,7 +109,7 @@ namespace LibraryApplication.InputForms
             // 
             // Ok
             // 
-            Ok.Location = new Point(70, 139);
+            Ok.Location = new Point(69, 163);
             Ok.Name = "Ok";
             Ok.Size = new Size(75, 23);
             Ok.TabIndex = 8;
@@ -115,11 +117,29 @@ namespace LibraryApplication.InputForms
             Ok.UseVisualStyleBackColor = true;
             Ok.Click += Ok_Click;
             // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(12, 128);
+            label1.Name = "label1";
+            label1.Size = new Size(90, 15);
+            label1.TabIndex = 10;
+            label1.Text = "Дата рождения";
+            // 
+            // BirthdayPicker
+            // 
+            BirthdayPicker.Location = new Point(108, 128);
+            BirthdayPicker.Name = "BirthdayPicker";
+            BirthdayPicker.Size = new Size(119, 23);
+            BirthdayPicker.TabIndex = 9;
+            // 
             // RedactReader
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(235, 174);
+            ClientSize = new Size(236, 201);
+            Controls.Add(label1);
+            Controls.Add(BirthdayPicker);
             Controls.Add(Ok);
             Controls.Add(label4);
             Controls.Add(PatronymicLabel);
@@ -146,5 +166,7 @@ namespace LibraryApplication.InputForms
         private Label PatronymicLabel;
         private Label label4;
         private Button Ok;
+        private Label label1;
+        private DateTimePicker BirthdayPicker;
     }
 }

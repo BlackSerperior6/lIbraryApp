@@ -35,6 +35,8 @@
             label2 = new Label();
             label3 = new Label();
             OkButton = new Button();
+            label4 = new Label();
+            ArrivalDate = new DateTimePicker();
             SuspendLayout();
             // 
             // Title
@@ -87,7 +89,7 @@
             // 
             // OkButton
             // 
-            OkButton.Location = new Point(71, 116);
+            OkButton.Location = new Point(70, 144);
             OkButton.Name = "OkButton";
             OkButton.Size = new Size(75, 23);
             OkButton.TabIndex = 6;
@@ -95,11 +97,29 @@
             OkButton.UseVisualStyleBackColor = true;
             OkButton.Click += OkButton_Click;
             // 
-            // AddBookForm
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(10, 115);
+            label4.Name = "label4";
+            label4.Size = new Size(106, 15);
+            label4.TabIndex = 8;
+            label4.Text = "Дата поступления";
+            // 
+            // ArrivalDate
+            // 
+            ArrivalDate.Location = new Point(122, 115);
+            ArrivalDate.Name = "ArrivalDate";
+            ArrivalDate.Size = new Size(113, 23);
+            ArrivalDate.TabIndex = 7;
+            // 
+            // RedactBook
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(215, 149);
+            ClientSize = new Size(270, 178);
+            Controls.Add(label4);
+            Controls.Add(ArrivalDate);
             Controls.Add(OkButton);
             Controls.Add(label3);
             Controls.Add(label2);
@@ -107,7 +127,7 @@
             Controls.Add(ReleaseDate);
             Controls.Add(Author);
             Controls.Add(Title);
-            Name = "AddBookForm";
+            Name = "RedactBook";
             Text = "Книга";
             ResumeLayout(false);
             PerformLayout();
@@ -122,5 +142,7 @@
         private Label label2;
         private Label label3;
         private Button OkButton;
+        private Label label4;
+        private DateTimePicker ArrivalDate;
     }
 }
