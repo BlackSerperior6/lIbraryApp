@@ -26,14 +26,15 @@ namespace LibraryApplication
 
         }
 
-        public static bool ExecuteInsertOrUpdate(string query, out NpgsqlException exception)
+        public static bool ExecuteInsertOrUpdate(string query, out NpgsqlException exception, out int affectedRows)
         {
             exception = null;
+            affectedRows = 0;
 
             try
             {
                 var command = new NpgsqlCommand(query, CurrentConnection);
-                command.ExecuteScalar();
+                affectedRows = command.ExecuteNonQuery();
                 return true;
             }
             catch (NpgsqlException ex) 

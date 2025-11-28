@@ -17,7 +17,7 @@ namespace LibraryApplication.Controllers
             string query = $"INSERT INTO \"BookCatalog\" (\"BookId\", \"Title\", \"Author\", \"Release Date\", \"Birth Date\") " +
             $"VALUES (DEFAULT, '{book.Title}', '{book.Author}', '{book.ReleasedDate}', '{book.ArrivalDate}');";
 
-            return DataBaseClient.ExecuteInsertOrUpdate(query, out exception);
+            return DataBaseClient.ExecuteInsertOrUpdate(query, out exception, out _);
         }
 
         public static bool RemoveBook(ulong id, out NpgsqlException exception, out int affectedRows)
@@ -41,7 +41,7 @@ namespace LibraryApplication.Controllers
                             $"\"Arrival Date\" = '{updatedBook.ArrivalDate}' " +
                             $"WHERE \"BookID\" = '{id}'";
 
-            return DataBaseClient.ExecuteInsertOrUpdate(query, out exception);
+            return DataBaseClient.ExecuteInsertOrUpdate(query, out exception, out _);
         }
     }
 }

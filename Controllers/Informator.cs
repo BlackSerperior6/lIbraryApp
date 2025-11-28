@@ -29,9 +29,7 @@ namespace LibraryApplication.Controllers
                 $"WHERE br.\"ReaderID\" = '{readerId}'" +
                 $"ORDER BY br.\"Borrow Date\" DESC;";
 
-            bool result = DataBaseClient.ExecuteSelect(query, out exception, out var reader);
-
-            if (!result)
+            if (!DataBaseClient.ExecuteSelect(query, out exception, out var reader))
                 return false;
 
             while (reader.Read())
@@ -62,9 +60,7 @@ namespace LibraryApplication.Controllers
                 $"WHERE rb.\"Borrow Date\" BETWEEN '{start}' AND '{end}'" +
                 $"ORDER BY br.\"Borrow Date\" DESC;";
 
-            bool result = DataBaseClient.ExecuteSelect(query, out exception, out var reader);
-
-            if (!result)
+            if (!DataBaseClient.ExecuteSelect(query, out exception, out var reader))
                 return false;
 
             while (reader.Read())

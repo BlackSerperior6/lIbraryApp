@@ -27,6 +27,8 @@ namespace LibraryApplication.BufferForms
             {
                 MessageBox.Show($"Дата начала периода должна быть меньше или равна дате конца периода!", "Ошибка",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                DialogResult = DialogResult.Cancel;
                 return;
             }
 

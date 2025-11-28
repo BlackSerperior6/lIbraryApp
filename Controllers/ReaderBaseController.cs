@@ -17,13 +17,12 @@ namespace LibraryApplication.Controllers
             $"VALUES (DEFAULT, '{reader.LastName}', '{reader.FirstName}', '{reader.Patronymic}', " +
                             $"'{reader.IssuedDate}', '{reader.BirthDate}');";
 
-            return DataBaseClient.ExecuteInsertOrUpdate(query, out exception);
+            return DataBaseClient.ExecuteInsertOrUpdate(query, out exception, out _);
         }
 
         public static bool RemoveReader(ulong id, out NpgsqlException exception, out int affectedRows)
         {
             string query = $"DELETE FROM \"ReaderBase\" WHERE \"ReaderID\" = '{id}'";
-
             return DataBaseClient.ExecuteDelete(query, out exception, out affectedRows);
         }
 
@@ -40,7 +39,7 @@ namespace LibraryApplication.Controllers
                             $", \"Issued Date\" = '{updatedReader.IssuedDate}', \"Birth Date\" = '{updatedReader.BirthDate}' " +
                             $"WHERE \"ReaderID\" = '{id}'";
 
-            return DataBaseClient.ExecuteInsertOrUpdate(query, out exception);
+            return DataBaseClient.ExecuteInsertOrUpdate(query, out exception, out _);
         }
     }
 }
