@@ -41,7 +41,7 @@ namespace LibraryApplication
                         connection.Open();
                         string query = $"INSERT INTO \"Readers\" (\"ReaderID\", \"Last Name\", \"First Name\", " +
                             $"\"Patronymic\", \"Issued Date\") " +
-                            $"VALUES (DEFAULT, '{reader.LastName}', '{reader.FisrtName}', '{reader.Patronymic}', " +
+                            $"VALUES (DEFAULT, '{reader.LastName}', '{reader.FirstName}', '{reader.Patronymic}', " +
                             $"'{reader.IssuedDate}');";
 
                         var command = new NpgsqlCommand(query, connection);
@@ -128,7 +128,7 @@ namespace LibraryApplication
 
                 Reader receivedReader = (Reader)originalReader;
 
-                var editor = new RedactReader(receivedReader.LastName, receivedReader.FisrtName, receivedReader.Patronymic,
+                var editor = new RedactReader(receivedReader.LastName, receivedReader.FirstName, receivedReader.Patronymic,
                     receivedReader.IssuedDate);
 
                 if (editor.ShowDialog() == DialogResult.OK)
@@ -139,7 +139,7 @@ namespace LibraryApplication
                     {
                         connection.Open();
                         string query = $"UPDATE \"Readers\" Set \"Last Name\" = '{receivedReader.LastName}', " +
-                            $"\"First Name\" = '{receivedReader.FisrtName}', \"Patronymic\" = '{receivedReader.Patronymic}'" +
+                            $"\"First Name\" = '{receivedReader.FirstName}', \"Patronymic\" = '{receivedReader.Patronymic}'" +
                             $", \"Issued Date\" = '{receivedReader.IssuedDate}' WHERE \"ReaderID\" = '{id}'";
 
                         var command = new NpgsqlCommand(query, connection);
@@ -190,7 +190,7 @@ namespace LibraryApplication
 
                 Reader receivedReader = (Reader)bufferReader;
 
-                var editor = new RedactReader(receivedReader.LastName, receivedReader.FisrtName, receivedReader.Patronymic,
+                var editor = new RedactReader(receivedReader.LastName, receivedReader.FirstName, receivedReader.Patronymic,
                     receivedReader.IssuedDate, false);
 
                 editor.Show();
