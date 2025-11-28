@@ -27,8 +27,8 @@ namespace LibraryApplication.Controllers
                 $"br.\"BorrowID\" " +
                 $"FROM \"IssuedBooks\" br " +
                 $"INNER JOIN \"BookCatalog\" b ON br.\"BookID\" = b.\"BookId\" " +
-                $"WHERE br.\"ReaderID\" = '{readerId}' " +
-                $"ORDER BY br.\"Borrow Date\" DESC;";
+                $"WHERE br.\"ReaderID\" = '{readerId}' AND br.\"Return Date\" IS NULL " +
+                $"ORDER BY br.\"BorrowID\" ASC;";
 
             if (!DataBaseClient.ExecuteSelect(query, out exception, out var reader))
                 return false;
@@ -50,19 +50,19 @@ namespace LibraryApplication.Controllers
         {
             books = new Dictionary<Book, (DateTime, DateTime, ulong)>();
 
-            string query = $"SELECT" +
+            string query = $"SELECT " +
                 $"b.\"BookId\"," +
                 $"b.\"Title\"," +
                 $"b.\"Author\"," +
                 $"b.\"Release Date\"," +
                 $"b.\"Arrival Date\"," +
                 $"br.\"Borrow Date\"," +
-                $"br.\"Return Date Planed\"" +
-                $"br.\"BorrowID\"" +
-                $"FROM \"IssuedBooks\" br" +
-                $"INNER JOIN \"BookCatalog\" b ON br.\"BookID\" = b.\"BookId\"" +
-                $"WHERE rb.\"Borrow Date\" BETWEEN '{start}' AND '{end}'" +
-                $"ORDER BY br.\"Borrow Date\" DESC;";
+                $"br.\"Return Date Planed\"," +
+                $"br.\"BorrowID\" " +
+                $"FROM \"IssuedBooks\" br " +
+                $"INNER JOIN \"BookCatalog\" b ON br.\"BookID\" = b.\"BookId\" " +
+                $"WHERE br.\"Borrow Date\" BETWEEN '{start}' AND '{end}' " +
+                $"ORDER BY br.\"BorrowID\" ASC;";
 
             if (!DataBaseClient.ExecuteSelect(query, out exception, out var reader))
                 return false;
@@ -84,19 +84,19 @@ namespace LibraryApplication.Controllers
         {
             books = new Dictionary<Book, (DateTime, DateTime, ulong)>();
 
-            string query = $"SELECT" +
+            string query = $"SELECT " +
                 $"b.\"BookId\"," +
                 $"b.\"Title\"," +
                 $"b.\"Author\"," +
                 $"b.\"Release Date\"," +
                 $"b.\"Arrival Date\"," +
                 $"br.\"Borrow Date\"," +
-                $"br.\"Return Date\"" +
-                $"br.\"BorrowID\"" +
-                $"FROM \"IssuedBooks\" br" +
-                $"INNER JOIN \"BookCatalog\" b ON br.\"BookID\" = b.\"BookId\"" +
-                $"WHERE rb.\"Return Date\" BETWEEN '{start}' AND '{end}'" +
-                $"ORDER BY br.\"Borrow Date\" DESC;";
+                $"br.\"Return Date\"," +
+                $"br.\"BorrowID\" " +
+                $"FROM \"IssuedBooks\" br " +
+                $"INNER JOIN \"BookCatalog\" b ON br.\"BookID\" = b.\"BookId\" " +
+                $"WHERE br.\"Return Date\" BETWEEN '{start}' AND '{end}' " +
+                $"ORDER BY br.\"BorrowID\" ASC; ";
 
             if (!DataBaseClient.ExecuteSelect(query, out exception, out var reader))
                 return false;

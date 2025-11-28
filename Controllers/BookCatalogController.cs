@@ -39,7 +39,7 @@ namespace LibraryApplication.Controllers
             string query = $"UPDATE \"BookCatalog\" Set \"Title\" = '{updatedBook.Title}', " +
                             $"\"Author\" = '{updatedBook.Author}', \"Release Date\" = '{updatedBook.ReleasedDate}', " +
                             $"\"Arrival Date\" = '{updatedBook.ArrivalDate}' " +
-                            $"WHERE \"BookID\" = '{id}'";
+                            $"WHERE \"BookId\" = '{id}'";
 
             return DataBaseClient.ExecuteInsertOrUpdate(query, out exception, out _);
         }

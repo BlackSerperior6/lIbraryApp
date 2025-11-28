@@ -23,7 +23,7 @@ namespace LibraryApplication.BufferForms
 
         private void OkButton_Click(object sender, EventArgs e)
         {
-            if (FirstDate.Value > SecondDate.Value)
+            if (FirstDate.Value.Date > SecondDate.Value.Date)
             {
                 MessageBox.Show($"Дата начала периода должна быть меньше или равна дате конца периода!", "Ошибка",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);

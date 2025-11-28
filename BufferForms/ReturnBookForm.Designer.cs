@@ -28,19 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
-            ReaderId = new TextBox();
+            BorId = new TextBox();
             label1 = new Label();
             Ok = new Button();
             RetDate = new DateTimePicker();
             label4 = new Label();
             SuspendLayout();
             // 
-            // ReaderId
+            // BorId
             // 
-            ReaderId.Location = new Point(112, 20);
-            ReaderId.Name = "ReaderId";
-            ReaderId.Size = new Size(100, 23);
-            ReaderId.TabIndex = 0;
+            BorId.Location = new Point(112, 20);
+            BorId.Name = "BorId";
+            BorId.Size = new Size(100, 23);
+            BorId.TabIndex = 0;
             // 
             // label1
             // 
@@ -86,7 +86,7 @@
             Controls.Add(label4);
             Controls.Add(label1);
             Controls.Add(RetDate);
-            Controls.Add(ReaderId);
+            Controls.Add(BorId);
             Name = "ReturnBookForm";
             Text = "Ввод данных";
             ResumeLayout(false);
@@ -95,7 +95,7 @@
 
         #endregion
 
-        private TextBox ReaderId;
+        private TextBox BorId;
         private Label label1;
         private Button Ok;
         private DateTimePicker RetDate;

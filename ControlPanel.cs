@@ -344,6 +344,8 @@ namespace LibraryApplication
                 {
                     MessageBox.Show($"Ошибка при выполнение запроса: {exception}", "Ошибка!",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                    return;
                 }
 
                 var visuaLViewer = new BooksListView(books);
@@ -364,6 +366,8 @@ namespace LibraryApplication
                 {
                     MessageBox.Show($"Ошибка при выполнение запроса: {exception}", "Ошибка!",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                    return;
                 }
 
                 var visuaLViewer = new BooksListView(books);
@@ -450,7 +454,7 @@ namespace LibraryApplication
                     return;
                 }
 
-                MessageBox.Show($"Книга была успешно выдана читателю", "Подтверждение!",
+                MessageBox.Show($"Книга была успешно забрана от читателю", "Подтверждение!",
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }

@@ -14,7 +14,7 @@ namespace LibraryApplication.Controllers
         public static bool IssuedBook(ulong readerId, ulong bookId, DateTime issueDate, DateTime plannedReturnDate, 
             out NpgsqlException exception)
         {
-            string queue = $"SELECT COUNT(*) FROM \"IssuedBooks\" WHERE \"BookID\" = '{readerId}' AND \"Return Date\" IS NULL";
+            string queue = $"SELECT COUNT(*) FROM \"IssuedBooks\" WHERE \"BookID\" = '{bookId}' AND \"Return Date\" IS NULL";
 
             if (!DataBaseClient.ExecuteSelect(queue, out exception, out var reader))
                 return false;
@@ -22,7 +22,12 @@ namespace LibraryApplication.Controllers
             reader.Read();
             
             if (reader.GetInt32(0) != 0)
-                return false;
+            { 
+                reader.Close();
+                return false; 
+            }
+
+            reader.Close();
 
             string secondQueue = $"INSERT INTO \"IssuedBooks\" (\"ReaderID\", \"BookID\", \"Borrow Date\", " +
                 $"\"Return Date Planed\", \"BorrowID\", \"Return Date\") VALUES ('{readerId}', '{bookId}', '{issueDate}', '{plannedReturnDate}', " +
@@ -35,7 +40,7 @@ namespace LibraryApplication.Controllers
         public static bool ReturnBook(ulong borrowId, DateTime returnDate,
             out NpgsqlException exception)
         {
-            string queue = $"UPDATE \"IssuedBooks\" Set \"Return Date\" = \"{returnDate}\"";
+            string queue = $"UPDATE \"IssuedBooks\" Set \"Return Date\" = '{returnDate}' WHERE \"BorrowID\" = '{borrowId}' AND \"Return Date\" IS NULL";
 
             if (!DataBaseClient.ExecuteInsertOrUpdate(queue, out exception, out var affectedRows))
                 return false;

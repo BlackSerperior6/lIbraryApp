@@ -22,7 +22,7 @@ namespace LibraryApplication.BufferForms
 
         private void Ok_Click(object sender, EventArgs e)
         {
-            if (!ulong.TryParse(ReaderId.Text, out borrowId))
+            if (!ulong.TryParse(BorId.Text, out borrowId))
             {
                 MessageBox.Show($"Неверный формат id взятия книги", "Ошибка",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);

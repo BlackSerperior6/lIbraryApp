@@ -226,7 +226,7 @@
             ReturnBook.Name = "ReturnBook";
             ReturnBook.Size = new Size(114, 47);
             ReturnBook.TabIndex = 4;
-            ReturnBook.Text = "Вернуит книгу от читателя";
+            ReturnBook.Text = "Вернуть книгу от читателя";
             ReturnBook.UseVisualStyleBackColor = true;
             ReturnBook.Click += ReturnBook_Click;
             // 
