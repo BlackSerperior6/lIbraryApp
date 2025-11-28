@@ -21,10 +21,8 @@ namespace LibraryApplication
 {
     public partial class ControlPanel : Form
     {
-        private string connectionString;
-        public ControlPanel(string conString)
+        public ControlPanel()
         {
-            connectionString = conString;
             InitializeComponent();
         }
 
@@ -110,11 +108,15 @@ namespace LibraryApplication
                 MessageBox.Show($"Читатель с указанным id не найден!", "Ошибка!",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
 
+                dbReader.Close();
+
                 return;
             }
 
             var currentReader = new Reader(dbReader.GetString(1), dbReader.GetString(2),
                             dbReader.GetString(3), dbReader.GetDateTime(4), dbReader.GetDateTime(5));
+
+            dbReader.Close();
 
             var editor = new RedactReader(currentReader);
 
@@ -122,10 +124,12 @@ namespace LibraryApplication
             {
                 currentReader = editor.result;
 
-                if (ReaderBaseController.UpdateReader(id, currentReader, out exception))
+                if (!ReaderBaseController.UpdateReader(id, currentReader, out exception))
                 {
                     MessageBox.Show($"Ошибка при выполнение второго запроса: {exception}", "Ошибка!",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                    dbReader.Close();
 
                     return;
                 }
@@ -151,7 +155,7 @@ namespace LibraryApplication
 
             if (!ReaderBaseController.GetInfoAboutReader(id, out var exception, out var dbReader))
             {
-                MessageBox.Show($"Ошибка при выполнение первого запроса: {exception}", "Ошибка!",
+                MessageBox.Show($"Ошибка при выполнение запроса: {exception}", "Ошибка!",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
 
                 return;
@@ -162,13 +166,17 @@ namespace LibraryApplication
                 MessageBox.Show($"Читатель с указанным id не найден!", "Ошибка!",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
 
+                dbReader.Close();
+
                 return;
             }
 
             var currentReader = new Reader(dbReader.GetString(1), dbReader.GetString(2),
                             dbReader.GetString(3), dbReader.GetDateTime(4), dbReader.GetDateTime(5));
 
+            dbReader.Close();
             var editor = new RedactReader(currentReader, false);
+            editor.Show();
         }
 
         private void AddBook_Click(object sender, EventArgs e)
@@ -253,12 +261,15 @@ namespace LibraryApplication
                 MessageBox.Show($"Книга с указанным id не найдена!", "Ошибка!",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
 
+                dbReader.Close();
+
                 return;
             }
 
             var currentBook = new Book(dbReader.GetString(1), dbReader.GetString(2),
                             dbReader.GetDateTime(3), dbReader.GetDateTime(4));
 
+            dbReader.Close();
             var editor = new RedactBook(currentBook);
 
             if (editor.ShowDialog() == DialogResult.OK)
@@ -305,13 +316,19 @@ namespace LibraryApplication
                 MessageBox.Show($"Книга с указанным id не найдена!", "Ошибка!",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
 
+                dbReader.Close();
+
                 return;
             }
 
             var currentBook = new Book(dbReader.GetString(1), dbReader.GetString(2),
                             dbReader.GetDateTime(3), dbReader.GetDateTime(4));
 
+            dbReader.Close();
+
             var editor = new RedactBook(currentBook, false);
+
+            editor.Show();
         }
 
         private void DatesReturn_Click(object sender, EventArgs e)
@@ -368,18 +385,10 @@ namespace LibraryApplication
                 return;
             }
 
-            if (!Informator.IssuedBooksForAReader(id, out var exception, out var books, out var foundReader))
+            if (!Informator.IssuedBooksForAReader(id, out var exception, out var books))
             {
-                if (foundReader)
-                {
-                    MessageBox.Show($"Читателя с таким id не существует!", "Ошибка!",
+                MessageBox.Show($"Ошибка при выполнение запроса: {exception}", "Ошибка!",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                else
-                {
-                    MessageBox.Show($"Ошибка при выполнение запроса: {exception}", "Ошибка!",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
 
                 return;
             }

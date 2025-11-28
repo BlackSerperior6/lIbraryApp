@@ -12,33 +12,22 @@ namespace LibraryApplication.Controllers
     {
         public static bool IssuedBooksForAReader(ulong readerId, out NpgsqlException exception, 
             out Dictionary<Book, (DateTime, DateTime, ulong)> 
-            books, out bool foundReader)
+            books)
         {
-            foundReader = false;
             books = new Dictionary<Book, (DateTime, DateTime, ulong)>();
 
-            string checkQuery = $"SELECT COUNT(*) FROM \"ReaderBase\" WHERE \"ReaderID\" == {readerId}";
-
-            if (!DataBaseClient.ExecuteSelect(checkQuery, out exception, out var firstReader))
-                return false;
-
-            foundReader = firstReader.Read();
-
-            if (!foundReader) 
-                return false;
-
-            string query = $"SELECT" +
+            string query = $"SELECT " +
                 $"b.\"BookId\"," +
                 $"b.\"Title\"," +
                 $"b.\"Author\"," +
                 $"b.\"Release Date\"," +
                 $"b.\"Arrival Date\"," +
                 $"br.\"Borrow Date\"," +
-                $"br.\"Return Date Planed\"" +
-                $"br.\"BorrowID\"" +
-                $"FROM \"IssuedBooks\" br" +
-                $"INNER JOIN \"BookCatalog\" b ON br.\"BookID\" = b.\"BookId\"" +
-                $"WHERE br.\"ReaderID\" = '{readerId}'" +
+                $"br.\"Return Date Planed\"," +
+                $"br.\"BorrowID\" " +
+                $"FROM \"IssuedBooks\" br " +
+                $"INNER JOIN \"BookCatalog\" b ON br.\"BookID\" = b.\"BookId\" " +
+                $"WHERE br.\"ReaderID\" = '{readerId}' " +
                 $"ORDER BY br.\"Borrow Date\" DESC;";
 
             if (!DataBaseClient.ExecuteSelect(query, out exception, out var reader))
@@ -51,6 +40,7 @@ namespace LibraryApplication.Controllers
                             (ulong) reader.GetInt64(7)));
             }
 
+            reader.Close();
             return true;
         }
 
@@ -84,6 +74,7 @@ namespace LibraryApplication.Controllers
                             (ulong)reader.GetInt64(7)));
             }
 
+            reader.Close();
             return true;
         }
 
@@ -117,6 +108,7 @@ namespace LibraryApplication.Controllers
                             (ulong) reader.GetInt64(7)));
             }
 
+            reader.Close();
             return true;
         }
     }

@@ -14,7 +14,7 @@ namespace LibraryApplication.Controllers
         public static bool AddBook(Book book,
             out NpgsqlException exception)
         {
-            string query = $"INSERT INTO \"BookCatalog\" (\"BookId\", \"Title\", \"Author\", \"Release Date\", \"Birth Date\") " +
+            string query = $"INSERT INTO \"BookCatalog\" (\"BookId\", \"Title\", \"Author\", \"Release Date\", \"Arrival Date\") " +
             $"VALUES (DEFAULT, '{book.Title}', '{book.Author}', '{book.ReleasedDate}', '{book.ArrivalDate}');";
 
             return DataBaseClient.ExecuteInsertOrUpdate(query, out exception, out _);
@@ -29,7 +29,7 @@ namespace LibraryApplication.Controllers
 
         public static bool GetInfoAboutBook(ulong id, out NpgsqlException exception, out NpgsqlDataReader reader)
         {
-            string query = $"SELECT * FROM \"BookCatalog\" WHERE \"BooksId\" = '{id}'";
+            string query = $"SELECT * FROM \"BookCatalog\" WHERE \"BookId\" = '{id}'";
             
             return DataBaseClient.ExecuteSelect(query, out exception, out reader);
         }

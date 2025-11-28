@@ -69,7 +69,7 @@ namespace LibraryApplication
 
             try
             {
-                var command = new NpgsqlCommand(query, CurrentConnection);
+                using var command = new NpgsqlCommand(query, CurrentConnection);
                 reader = command.ExecuteReader();
                 return true;
             }

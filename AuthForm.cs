@@ -22,26 +22,17 @@ namespace LibraryApplication
             string connectionString = $"Server={server};Port={port};Database={database};" +
                 $"User Id={username};Password={password};";
 
-            Connect(connectionString);
-        }
-
-        private void Connect(string connectionString)
-        {
-            try
+            if (DataBaseClient.Connect(connectionString))
             {
-                using var conn = new NpgsqlConnection(connectionString);
-
-                conn.Open();
-
                 Hide();
-                var controlPanel = new ControlPanel(connectionString);
+                var controlPanel = new ControlPanel();
                 controlPanel.FormClosed += (s, args) => Close();
 
                 controlPanel.Show();
             }
-            catch (NpgsqlException ex)
+            else
             {
-                MessageBox.Show($"Ошибка авторизации: {ex.Message}", "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show($"Неверный логин или пароль", "Ошибка!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }
