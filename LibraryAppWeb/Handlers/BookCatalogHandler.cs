@@ -9,7 +9,7 @@ public static class BookCatalogHandler
     public static async Task<(bool success, NpgsqlException exception)> AddBook(Book book)
     {
         string query = $"INSERT INTO \"BookCatalog\" (\"BookId\", \"Title\", \"Author\", \"Release Date\", \"Arrival Date\") " +
-                       $"VALUES (DEFAULT, '@title', '@author', '@releaseDate', '@arrivalDate');";
+                       $"VALUES (DEFAULT, @title, @author, @releaseDate, @arrivalDate, DEFAULT);";
         
         try
         {
@@ -31,7 +31,7 @@ public static class BookCatalogHandler
 
     public static async Task<(bool success, NpgsqlException exception, int affectedRow)> RemoveBook(ulong id)
     {
-        string query = $"DELETE FROM \"BookCatalog\" WHERE \"BookId\" = '@id'";
+        string query = $"DELETE FROM \"BookCatalog\" WHERE \"BookId\" = @id;";
         
         try
         {
@@ -49,7 +49,7 @@ public static class BookCatalogHandler
 
     public static async Task<(bool success, NpgsqlException exception, NpgsqlDataReader reader)> GetInfoAboutBook(ulong id)
     {
-        string query = $"SELECT * FROM \"BookCatalog\" WHERE \"BookId\" = '@id'";
+        string query = $"SELECT * FROM \"BookCatalog\" WHERE \"BookId\" = @id;";
         
         try
         {
@@ -67,12 +67,13 @@ public static class BookCatalogHandler
         }
     }
 
-    public static async Task<(bool success, NpgsqlException exception)> UpdateBook(ulong id, Book updatedBook)
+    public static async Task<(bool success, NpgsqlException exception)> UpdateBook(ulong id, int expectedVerion, Book updatedBook)
     {
-        string query = $"UPDATE \"BookCatalog\" Set \"Title\" = '@title', " +
-                       $"\"Author\" = '@author', \"Release Date\" = '@releaseDate', " +
-                       $"\"Arrival Date\" = '@arrivalDate' " +
-                       $"WHERE \"BookId\" = '@id'";
+        string query = $"UPDATE \"BookCatalog\" Set \"Title\" = @title, " +
+                       $"\"Author\" = @author, \"Release Date\" = @releaseDate, " +
+                       $"\"Arrival Date\" = @arrivalDate " +
+                       $"\"version\" = {expectedVerion + 1}" +
+                       $"WHERE \"BookId\" = @id and \"version\" = {expectedVerion};";
         
         try
         {
@@ -83,8 +84,12 @@ public static class BookCatalogHandler
             command.Parameters.AddWithValue("@releaseDate", NpgsqlDbType.Date, updatedBook.ReleasedDate);
             command.Parameters.AddWithValue("@arrivalDate", NpgsqlDbType.Date, updatedBook.ArrivalDate);
             command.Parameters.AddWithValue("@id", NpgsqlDbType.Bigint, id);
-            
-            var reader = await command.ExecuteReaderAsync();
+
+            int updated =  await command.ExecuteNonQueryAsync();
+
+            if (updated == 0)
+                throw new NpgsqlException("Данная запись была удалена, либо обновлена во время процесса. Пожалуйста, попробуйте еще раз!");
+
             return (true, null);
 
         }

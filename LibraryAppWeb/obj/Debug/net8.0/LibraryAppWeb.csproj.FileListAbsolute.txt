@@ -28,3 +28,41 @@
 /home/blackserperior6/Универ/Третий курс/Кравец/Библиотека момент/LibraryAppWeb/obj/Debug/net8.0/LibraryAppWeb.pdb
 /home/blackserperior6/Универ/Третий курс/Кравец/Библиотека момент/LibraryAppWeb/obj/Debug/net8.0/LibraryAppWeb.genruntimeconfig.cache
 /home/blackserperior6/Универ/Третий курс/Кравец/Библиотека момент/LibraryAppWeb/obj/Debug/net8.0/ref/LibraryAppWeb.dll
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\obj\Debug\net8.0\LibraryAppWeb.csproj.AssemblyReference.cache
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\obj\Debug\net8.0\LibraryAppWeb.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\obj\Debug\net8.0\LibraryAppWeb.AssemblyInfoInputs.cache
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\obj\Debug\net8.0\LibraryAppWeb.AssemblyInfo.cs
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\obj\Debug\net8.0\LibraryAppWeb.csproj.CoreCompileInputs.cache
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\obj\Debug\net8.0\LibraryAppWeb.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\obj\Debug\net8.0\LibraryAppWeb.sourcelink.json
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\obj\Debug\net8.0\LibraryAppWeb.dll
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\obj\Debug\net8.0\refint\LibraryAppWeb.dll
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\obj\Debug\net8.0\LibraryAppWeb.pdb
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\bin\Debug\net8.0\appsettings.Development.json
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\bin\Debug\net8.0\appsettings.json
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\bin\Debug\net8.0\LibraryAppWeb.staticwebassets.runtime.json
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\bin\Debug\net8.0\LibraryAppWeb.staticwebassets.endpoints.json
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\bin\Debug\net8.0\LibraryAppWeb.exe
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\bin\Debug\net8.0\LibraryAppWeb.deps.json
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\bin\Debug\net8.0\LibraryAppWeb.runtimeconfig.json
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\bin\Debug\net8.0\LibraryAppWeb.dll
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\bin\Debug\net8.0\LibraryAppWeb.pdb
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\bin\Debug\net8.0\Npgsql.dll
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\bin\Debug\net8.0\System.Diagnostics.DiagnosticSource.dll
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\obj\Debug\net8.0\scopedcss\Components\Layout\MainLayout.razor.rz.scp.css
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\obj\Debug\net8.0\scopedcss\Components\Layout\NavMenu.razor.rz.scp.css
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\obj\Debug\net8.0\scopedcss\bundle\LibraryAppWeb.styles.css
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\obj\Debug\net8.0\scopedcss\projectbundle\LibraryAppWeb.bundle.scp.css
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\obj\Debug\net8.0\staticwebassets.build.json
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\obj\Debug\net8.0\staticwebassets.development.json
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\obj\Debug\net8.0\staticwebassets.build.endpoints.json
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\obj\Debug\net8.0\staticwebassets\msbuild.LibraryAppWeb.Microsoft.AspNetCore.StaticWebAssets.props
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\obj\Debug\net8.0\staticwebassets\msbuild.LibraryAppWeb.Microsoft.AspNetCore.StaticWebAssetEndpoints.props
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\obj\Debug\net8.0\staticwebassets\msbuild.build.LibraryAppWeb.props
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\obj\Debug\net8.0\staticwebassets\msbuild.buildMultiTargeting.LibraryAppWeb.props
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\obj\Debug\net8.0\staticwebassets\msbuild.buildTransitive.LibraryAppWeb.props
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\obj\Debug\net8.0\staticwebassets.pack.json
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\obj\Debug\net8.0\staticwebassets.upToDateCheck.txt
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\obj\Debug\net8.0\LibraryA.B2BD6337.Up2Date
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\obj\Debug\net8.0\LibraryAppWeb.genruntimeconfig.cache
+C:\Users\Максим\RiderProjects\lIbraryApp\LibraryAppWeb\obj\Debug\net8.0\ref\LibraryAppWeb.dll
