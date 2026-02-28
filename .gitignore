@@ -1,3 +1,5 @@
 LibraryAppWeb/obj/**
+LibraryAppWeb/bin/**
+LibraryAppWeb/.idea/**
 LIbraryAppOld/obj/**
 .idea/**

@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using LibraryAppWeb.Features;
 using Npgsql;
 using NpgsqlTypes;
@@ -90,7 +91,7 @@ public static class ReaderBaseHandler
             var updated = await command.ExecuteNonQueryAsync();
 
             if (updated == 0)
-                throw new NpgsqlException("Данная запись была удалена, либо обновлена во время процесса. Пожалуйста, попробуйте еще раз!");
+                throw new NpgsqlException("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ!");
 
             return (true, null);
         }
