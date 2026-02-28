@@ -1,6 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryAppWeb", "LibraryAppWeb.csproj", "{77A011CE-09C5-43B1-8A98-C00BE0835E14}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryAppWeb", "LibraryAppWeb.csproj", "{9FE3129E-65DE-47BA-ADF7-B69062C43721}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -8,9 +11,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{77A011CE-09C5-43B1-8A98-C00BE0835E14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{77A011CE-09C5-43B1-8A98-C00BE0835E14}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{77A011CE-09C5-43B1-8A98-C00BE0835E14}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{77A011CE-09C5-43B1-8A98-C00BE0835E14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FE3129E-65DE-47BA-ADF7-B69062C43721}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FE3129E-65DE-47BA-ADF7-B69062C43721}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FE3129E-65DE-47BA-ADF7-B69062C43721}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FE3129E-65DE-47BA-ADF7-B69062C43721}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FCCE96FE-0531-4DE8-B80F-42046A9D6636}
 	EndGlobalSection
 EndGlobal
