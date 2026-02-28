@@ -11,7 +11,7 @@ public class BookIssuerHandler
 
         try
         {
-            await using (var command = new NpgsqlCommand(query, DataBaseClient.CurrentConnection))
+            await using (var command = new NpgsqlCommand(query, DataBaseConnectionFactory.CurrentConnection))
             {
                 command.Parameters.AddWithValue("@readerId", NpgsqlTypes.NpgsqlDbType.Bigint, readerId);
 
@@ -32,7 +32,7 @@ public class BookIssuerHandler
                                  $"\"Return Date Planed\", \"BorrowID\", \"Return Date\") VALUES (@readerId, '@bookId', '@issueDate', '@plannedReturnDate', " +
                                  $"DEFAULT, NULL, DEFAULT)";
 
-            await using (var command = new NpgsqlCommand(secondQueue, DataBaseClient.CurrentConnection))
+            await using (var command = new NpgsqlCommand(secondQueue, DataBaseConnectionFactory.CurrentConnection))
             {
                 command.Parameters.AddWithValue("@readerId", NpgsqlTypes.NpgsqlDbType.Bigint, readerId);
                 command.Parameters.AddWithValue("@bookId", NpgsqlTypes.NpgsqlDbType.Bigint, bookId);
@@ -57,7 +57,7 @@ public class BookIssuerHandler
 
         try
         {
-            await using var command = new NpgsqlCommand(query, DataBaseClient.CurrentConnection);
+            await using var command = new NpgsqlCommand(query, DataBaseConnectionFactory.CurrentConnection);
 
             command.Parameters.AddWithValue("@returnDate", NpgsqlTypes.NpgsqlDbType.Date, returnDate);
             command.Parameters.AddWithValue("@borrowId", NpgsqlTypes.NpgsqlDbType.Date, borrowId);

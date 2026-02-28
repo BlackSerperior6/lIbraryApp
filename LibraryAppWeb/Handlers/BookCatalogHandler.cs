@@ -1,4 +1,5 @@
 using LibraryAppWeb.Features;
+using LibraryAppWeb.Interfaces;
 using Npgsql;
 using NpgsqlTypes;
 
@@ -6,6 +7,8 @@ namespace LibraryAppWeb.Handlers;
 
 public static class BookCatalogHandler
 {
+    private static readonly IDbConnectionFactory _connectionFactory;
+
     public static async Task<(bool success, NpgsqlException exception)> AddBook(Book book)
     {
         string query = $"INSERT INTO \"BookCatalog\" (\"BookId\", \"Title\", \"Author\", \"Release Date\", \"Arrival Date\") " +
@@ -13,7 +16,7 @@ public static class BookCatalogHandler
         
         try
         {
-            await using var command = new NpgsqlCommand(query, DataBaseClient.CurrentConnection);
+            await using var command = new NpgsqlCommand(query, DataBaseConnectionFactory.CurrentConnection);
         
             command.Parameters.AddWithValue("@title", NpgsqlDbType.Text, book.Title);
             command.Parameters.AddWithValue("@author", NpgsqlDbType.Text, book.Author);
@@ -35,7 +38,7 @@ public static class BookCatalogHandler
         
         try
         {
-            await using var command = new NpgsqlCommand(query, DataBaseClient.CurrentConnection);
+            await using var command = new NpgsqlCommand(query, DataBaseConnectionFactory.CurrentConnection);
             command.Parameters.AddWithValue("@id", NpgsqlDbType.Bigint, id);
             
             var affectedRows = await command.ExecuteNonQueryAsync();
@@ -53,7 +56,7 @@ public static class BookCatalogHandler
         
         try
         {
-            await using var command = new NpgsqlCommand(query, DataBaseClient.CurrentConnection);
+            await using var command = new NpgsqlCommand(query, DataBaseConnectionFactory.CurrentConnection);
         
             command.Parameters.AddWithValue("@id", NpgsqlDbType.Bigint, id);
             
@@ -77,7 +80,7 @@ public static class BookCatalogHandler
         
         try
         {
-            await using var command = new NpgsqlCommand(query, DataBaseClient.CurrentConnection);
+            await using var command = new NpgsqlCommand(query, DataBaseConnectionFactory.CurrentConnection);
         
             command.Parameters.AddWithValue("@title", NpgsqlDbType.Text, updatedBook.Title);
             command.Parameters.AddWithValue("@author", NpgsqlDbType.Text, updatedBook.Author);
