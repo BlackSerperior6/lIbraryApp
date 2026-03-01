@@ -16,7 +16,7 @@ public class DataBaseConnectionFactory : IDbConnectionFactory
         if (string.IsNullOrEmpty(dbPassword))
         {
             throw new InvalidOperationException(
-                "DB_PASSWORD environment variable is not set. " +
+                "DP_LIB_PASSWORD environment variable is not set. " +
                 "Please set it before running the application."
             );
         }
