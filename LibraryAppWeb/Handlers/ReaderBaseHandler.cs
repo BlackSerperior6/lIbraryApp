@@ -16,7 +16,8 @@ public static class ReaderBaseHandler
 
         try
         {
-            await using var command = new NpgsqlCommand(query, DataBaseConnectionFactory.CurrentConnection);
+            await using var connection = await IDbConnectionFactory.CreateConnection();
+            await using var command = new NpgsqlCommand(query, connection);
             
             command.Parameters.AddWithValue("@lastName", NpgsqlDbType.Text, reader.LastName);
             command.Parameters.AddWithValue("@firstName", NpgsqlDbType.Text, reader.FirstName);
@@ -39,7 +40,8 @@ public static class ReaderBaseHandler
         
         try
         {
-            await using var command = new NpgsqlCommand(query, DataBaseConnectionFactory.CurrentConnection);
+            await using var connection = await IDbConnectionFactory.CreateConnection();
+            await using var command = new NpgsqlCommand(query, connection);
             command.Parameters.AddWithValue("@id", NpgsqlDbType.Bigint, id);
             
             var affectedRows = await command.ExecuteNonQueryAsync();
@@ -57,7 +59,8 @@ public static class ReaderBaseHandler
 
         try
         {
-            await using var command = new NpgsqlCommand(query, DataBaseConnectionFactory.CurrentConnection);
+            await using var connection = await IDbConnectionFactory.CreateConnection();
+            await using var command = new NpgsqlCommand(query, connection);
             command.Parameters.AddWithValue("@id", NpgsqlDbType.Bigint, id);
 
             var reader = await command.ExecuteReaderAsync();
@@ -79,7 +82,8 @@ public static class ReaderBaseHandler
 
         try
         {
-            await using var command = new NpgsqlCommand(query, DataBaseConnectionFactory.CurrentConnection);
+            await using var connection = await IDbConnectionFactory.CreateConnection();
+            await using var command = new NpgsqlCommand(query, connection);
 
             command.Parameters.AddWithValue("@lastName", NpgsqlDbType.Text, updatedReader.LastName);
             command.Parameters.AddWithValue("@firstName", NpgsqlDbType.Text, updatedReader.FirstName);

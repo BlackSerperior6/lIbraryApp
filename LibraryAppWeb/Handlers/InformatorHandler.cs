@@ -25,7 +25,8 @@ public static class InformatorHandler
 
         try
         {
-            await using var command = new NpgsqlCommand(query, DataBaseConnectionFactory.CurrentConnection);
+            await using var connection = await IDbConnectionFactory.CreateConnection();
+            await using var command = new NpgsqlCommand(query, connection);
 
             command.Parameters.AddWithValue("@readerId", NpgsqlTypes.NpgsqlDbType.Bigint, readerId);
 
@@ -68,7 +69,8 @@ public static class InformatorHandler
 
         try
         {
-            await using var command = new NpgsqlCommand(query, DataBaseConnectionFactory.CurrentConnection);
+            await using var connection = await IDbConnectionFactory.CreateConnection();
+            await using var command = new NpgsqlCommand(query, connection);
 
             command.Parameters.AddWithValue("@startDate", NpgsqlTypes.NpgsqlDbType.Date, start);
             command.Parameters.AddWithValue("@startDate", NpgsqlTypes.NpgsqlDbType.Date, end);

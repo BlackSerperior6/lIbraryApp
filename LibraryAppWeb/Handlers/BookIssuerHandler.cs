@@ -9,44 +9,59 @@ public class BookIssuerHandler
     {
         string query = $"SELECT COUNT(*) FROM \"IssuedBooks\" WHERE \"BookID\" = @bookId AND \"Return Date\" IS NULL";
 
-        try
+        try 
         {
-            await using (var command = new NpgsqlCommand(query, DataBaseConnectionFactory.CurrentConnection))
+            await using var connection = await IDbConnectionFactory.CreateConnection();
+            await using var transaction = await connection.BeginTransactionAsync(IsolationLevel.ReadCommitted);
+
+            try
             {
-                command.Parameters.AddWithValue("@readerId", NpgsqlTypes.NpgsqlDbType.Bigint, readerId);
-
-                var reader = await command.ExecuteReaderAsync();
-
-                await reader.ReadAsync();
-
-                if (reader.GetInt32(0) != 0)
+                await using (var command = new NpgsqlCommand(query, connection))
                 {
+                    command.Parameters.AddWithValue("@readerId", NpgsqlTypes.NpgsqlDbType.Bigint, readerId);
+
+                    var reader = await command.ExecuteReaderAsync();
+
+                    await reader.ReadAsync();
+
+                    if (reader.GetInt32(0) != 0)
+                    {
+                        await reader.CloseAsync();
+                        return (false, null);
+                    }
+
                     await reader.CloseAsync();
-                    return (false, null);
                 }
 
-                await reader.CloseAsync();
+                string secondQueue = $"INSERT INTO \"IssuedBooks\" (\"ReaderID\", \"BookID\", \"Borrow Date\", " +
+                                    $"\"Return Date Planed\", \"BorrowID\", \"Return Date\") VALUES (@readerId, '@bookId', '@issueDate', '@plannedReturnDate', " +
+                                    $"DEFAULT, NULL, DEFAULT)";
+
+                await using (var command = new NpgsqlCommand(secondQueue, connection))
+                {
+                    command.Parameters.AddWithValue("@readerId", NpgsqlTypes.NpgsqlDbType.Bigint, readerId);
+                    command.Parameters.AddWithValue("@bookId", NpgsqlTypes.NpgsqlDbType.Bigint, bookId);
+                    command.Parameters.AddWithValue("@issueDate", NpgsqlTypes.NpgsqlDbType.Date, issueDate);
+                    command.Parameters.AddWithValue("@@plannedReturnDate", NpgsqlTypes.NpgsqlDbType.Date, plannedReturnDate);
+
+                    await command.ExecuteNonQueryAsync();
+                    return (true, null);
+                }
+
+                transaction.Commit();
             }
-
-            string secondQueue = $"INSERT INTO \"IssuedBooks\" (\"ReaderID\", \"BookID\", \"Borrow Date\", " +
-                                 $"\"Return Date Planed\", \"BorrowID\", \"Return Date\") VALUES (@readerId, '@bookId', '@issueDate', '@plannedReturnDate', " +
-                                 $"DEFAULT, NULL, DEFAULT)";
-
-            await using (var command = new NpgsqlCommand(secondQueue, DataBaseConnectionFactory.CurrentConnection))
+            catch (NpgsqlException e)
             {
-                command.Parameters.AddWithValue("@readerId", NpgsqlTypes.NpgsqlDbType.Bigint, readerId);
-                command.Parameters.AddWithValue("@bookId", NpgsqlTypes.NpgsqlDbType.Bigint, bookId);
-                command.Parameters.AddWithValue("@issueDate", NpgsqlTypes.NpgsqlDbType.Date, issueDate);
-                command.Parameters.AddWithValue("@@plannedReturnDate", NpgsqlTypes.NpgsqlDbType.Date, plannedReturnDate);
-
-                await command.ExecuteNonQueryAsync();
-                return (true, null);
+                transaction.Rollback();
+                return (false, e);
             }
+
         }
         catch (NpgsqlException e)
         {
             return (false, e);
         }
+
     }
 
     public static async Task<(bool, NpgsqlException exception)> ReturnBook(ulong borrowId, DateTime returnDate, int expectedVersion)
@@ -57,6 +72,7 @@ public class BookIssuerHandler
 
         try
         {
+            await using var connection = await IDbConnectionFactory.CreateConnection();
             await using var command = new NpgsqlCommand(query, DataBaseConnectionFactory.CurrentConnection);
 
             command.Parameters.AddWithValue("@returnDate", NpgsqlTypes.NpgsqlDbType.Date, returnDate);

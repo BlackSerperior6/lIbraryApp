@@ -3,11 +3,11 @@ using Npgsql;
 
 namespace LibraryAppWeb;
 
-public class DataBaseConnectionFactory : IDbConnectionFactory
+public static class DataBaseConnectionFactory
 {
     private readonly string _connectionString;
 
-    public DataBaseConnectionFactory(IConfiguration configuration)
+    public static void Init(IConfiguration configuration)
     {
         var baseConnectionString = configuration.GetConnectionString("DefaultConnection");
 
@@ -24,5 +24,10 @@ public class DataBaseConnectionFactory : IDbConnectionFactory
         _connectionString = $"{baseConnectionString};Password={dbPassword};";
     }
 
-    public NpgsqlConnection CreateConnection() => new NpgsqlConnection(_connectionString);
+    public static async Task<NpgsqlConnection> CreateConnection() 
+    {
+        using var connection = NpgsqlConnection(_connectionString);
+        await connection.OpenAsync();
+        return connection;
+    }
 }

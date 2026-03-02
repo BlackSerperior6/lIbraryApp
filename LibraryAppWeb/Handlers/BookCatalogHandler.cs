@@ -16,7 +16,8 @@ public static class BookCatalogHandler
         
         try
         {
-            await using var command = new NpgsqlCommand(query, DataBaseConnectionFactory.CurrentConnection);
+            await using var connection = await IDbConnectionFactory.CreateConnection();
+            await using var command = new NpgsqlCommand(query, connection);
         
             command.Parameters.AddWithValue("@title", NpgsqlDbType.Text, book.Title);
             command.Parameters.AddWithValue("@author", NpgsqlDbType.Text, book.Author);
@@ -38,7 +39,8 @@ public static class BookCatalogHandler
         
         try
         {
-            await using var command = new NpgsqlCommand(query, DataBaseConnectionFactory.CurrentConnection);
+            await using var connection = await IDbConnectionFactory.CreateConnection();
+            await using var command = new NpgsqlCommand(query, connection);
             command.Parameters.AddWithValue("@id", NpgsqlDbType.Bigint, id);
             
             var affectedRows = await command.ExecuteNonQueryAsync();
@@ -56,6 +58,7 @@ public static class BookCatalogHandler
         
         try
         {
+            await using var connection = await IDbConnectionFactory.CreateConnection();
             await using var command = new NpgsqlCommand(query, DataBaseConnectionFactory.CurrentConnection);
         
             command.Parameters.AddWithValue("@id", NpgsqlDbType.Bigint, id);
@@ -80,6 +83,7 @@ public static class BookCatalogHandler
         
         try
         {
+            await using var connection = await IDbConnectionFactory.CreateConnection();
             await using var command = new NpgsqlCommand(query, DataBaseConnectionFactory.CurrentConnection);
         
             command.Parameters.AddWithValue("@title", NpgsqlDbType.Text, updatedBook.Title);
@@ -91,7 +95,7 @@ public static class BookCatalogHandler
             int updated =  await command.ExecuteNonQueryAsync();
 
             if (updated == 0)
-                throw new NpgsqlException("Данная запись была удалена, либо обновлена во время процесса. Пожалуйста, попробуйте еще раз!");
+                throw new NpgsqlException("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ!");
 
             return (true, null);
 

@@ -1,7 +1,14 @@
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.FileProviders;
+using Microsoft.Extensions.Hosting;
+using LibraryAppWeb.Interfaces;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorPages();
+
+DataBaseConnectionFactory.Init();
 
 var app = builder.Build();
 
@@ -15,12 +22,14 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// В .NET 8.0 используем UseStaticFiles вместо MapStaticAssets
+app.UseStaticFiles();
+
 app.UseRouting();
 
 app.UseAuthorization();
 
-app.MapStaticAssets();
-app.MapRazorPages()
-   .WithStaticAssets();
+// В .NET 8.0 Razor Pages не используют WithStaticAssets
+app.MapRazorPages();
 
 app.Run();

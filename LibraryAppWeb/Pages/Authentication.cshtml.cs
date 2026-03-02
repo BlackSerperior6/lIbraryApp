@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Npgsql;
 using System.Threading.Tasks;
+using BCrypt.Net;
 
 namespace LibraryAppWeb.Pages
 {
@@ -17,19 +18,53 @@ namespace LibraryAppWeb.Pages
 
         public async Task<IActionResult> OnPost()
         {
-            var connection = new NpgsqlConnection("aaa");
+            string saltQuery = $"SELECT \"saltHash\" from \"DBUsers\" WHERE 'Login' = @login;";
 
-            string connectionString = $"Server=localhost;Port=5432;Database=Library;" +
-                $"User Id={Login};Password={Password};";
-
-            if (await DataBaseConnectionFactory.ConnectAsync(connectionString))
+            try
             {
-                // Store login info in session
-                HttpContext.Session.SetString("Username", Login);
-                return RedirectToPage("/Index");
+                await using var connection = await IDbConnectionFactory.CreateConnection();
+                await using var command = new NpgsqlCommand(query, connection);
+
+                command.Parameters.AddWithValue("@login", NpgsqlDbType.Text, Login);
+
+                var reader = await command.ExecuteReaderAsync();
+
+                await reader.ReadAsync();
+
+                if (reader.GEtTe(0) != 0)
+                {
+                    await reader.CloseAsync();
+                    return (false, null);
+                }
+
+                await reader.CloseAsync();
+
+            }
+            catch (NpgsqlException e)
+            {
+                ErrorMessage = e.Text;
             }
 
-            ErrorMessage = "Неверный логин или пароль";
+            try
+            {
+                await using var connection = await IDbConnectionFactory.CreateConnection();
+                await using var command = new NpgsqlCommand(query, connection);
+                
+                command.Parameters.AddWithValue("@lastName", NpgsqlDbType.Text, reader.LastName);
+                command.Parameters.AddWithValue("@firstName", NpgsqlDbType.Text, reader.FirstName);
+                command.Parameters.AddWithValue("@patronymic", NpgsqlDbType.Text, reader.Patronymic);
+                command.Parameters.AddWithValue("@issuedDate", NpgsqlDbType.Date, reader.IssuedDate);
+                command.Parameters.AddWithValue("@birthDate", NpgsqlDbType.Date, reader.BirthDate);
+                
+                await command.ExecuteNonQueryAsync();
+                return (true, null);
+            }
+            catch (NpgsqlException e)
+            {
+                return (false, e);
+            }
+
+            ErrorMessage = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ";
             return Page();
         }
     }
