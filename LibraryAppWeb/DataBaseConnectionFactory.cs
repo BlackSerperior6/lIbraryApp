@@ -1,11 +1,10 @@
-using LibraryAppWeb.Interfaces;
 using Npgsql;
 
 namespace LibraryAppWeb;
 
 public static class DataBaseConnectionFactory
 {
-    private readonly string _connectionString;
+    private static string _connectionString;
 
     public static void Init(IConfiguration configuration)
     {
@@ -26,7 +25,7 @@ public static class DataBaseConnectionFactory
 
     public static async Task<NpgsqlConnection> CreateConnection() 
     {
-        using var connection = NpgsqlConnection(_connectionString);
+        using var connection = new NpgsqlConnection(_connectionString);
         await connection.OpenAsync();
         return connection;
     }

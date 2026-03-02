@@ -11,8 +11,8 @@ public class BookIssuerHandler
 
         try 
         {
-            await using var connection = await IDbConnectionFactory.CreateConnection();
-            await using var transaction = await connection.BeginTransactionAsync(IsolationLevel.ReadCommitted);
+            await using var connection = await DataBaseConnectionFactory.CreateConnection();
+            await using var transaction = await connection.BeginTransactionAsync();
 
             try
             {
@@ -64,7 +64,8 @@ public class BookIssuerHandler
 
     }
 
-    public static async Task<(bool, NpgsqlException exception)> ReturnBook(ulong borrowId, DateTime returnDate, int expectedVersion)
+    public static async Task<(bool, NpgsqlException exception)> ReturnBook(ulong borrowId, DateTime returnDate, int expectedVersion, 
+        NpgsqlConnection preExistingConnection = null)
     {
         string query = $"UPDATE \"IssuedBooks\" Set \"Return Date\" = @returnDate, \"version\" = '{expectedVersion + 1}' " +
             $"WHERE \"BorrowID\" = @borrowId AND \"Return Date\" IS NULL AND " +
@@ -72,8 +73,8 @@ public class BookIssuerHandler
 
         try
         {
-            await using var connection = await IDbConnectionFactory.CreateConnection();
-            await using var command = new NpgsqlCommand(query, DataBaseConnectionFactory.CurrentConnection);
+            await using var connection = preExistingConnection ?? await DataBaseConnectionFactory.CreateConnection();
+            await using var command = new NpgsqlCommand(query, connection);
 
             command.Parameters.AddWithValue("@returnDate", NpgsqlTypes.NpgsqlDbType.Date, returnDate);
             command.Parameters.AddWithValue("@borrowId", NpgsqlTypes.NpgsqlDbType.Date, borrowId);

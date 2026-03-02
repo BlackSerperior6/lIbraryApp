@@ -1,5 +1,4 @@
 using LibraryAppWeb.Features;
-using LibraryAppWeb.Interfaces;
 using Npgsql;
 using NpgsqlTypes;
 
@@ -7,16 +6,15 @@ namespace LibraryAppWeb.Handlers;
 
 public static class BookCatalogHandler
 {
-    private static readonly IDbConnectionFactory _connectionFactory;
 
-    public static async Task<(bool success, NpgsqlException exception)> AddBook(Book book)
+    public static async Task<(bool success, NpgsqlException exception)> AddBook(Book book, NpgsqlConnection preExistingConnection = null)
     {
         string query = $"INSERT INTO \"BookCatalog\" (\"BookId\", \"Title\", \"Author\", \"Release Date\", \"Arrival Date\") " +
                        $"VALUES (DEFAULT, @title, @author, @releaseDate, @arrivalDate, DEFAULT);";
         
         try
         {
-            await using var connection = await IDbConnectionFactory.CreateConnection();
+            await using var connection = preExistingConnection ?? await DataBaseConnectionFactory.CreateConnection();
             await using var command = new NpgsqlCommand(query, connection);
         
             command.Parameters.AddWithValue("@title", NpgsqlDbType.Text, book.Title);
@@ -33,13 +31,13 @@ public static class BookCatalogHandler
         }
     }
 
-    public static async Task<(bool success, NpgsqlException exception, int affectedRow)> RemoveBook(ulong id)
+    public static async Task<(bool success, NpgsqlException exception, int affectedRow)> RemoveBook(ulong id, NpgsqlConnection preExistingConnection = null)
     {
         string query = $"DELETE FROM \"BookCatalog\" WHERE \"BookId\" = @id;";
         
         try
         {
-            await using var connection = await IDbConnectionFactory.CreateConnection();
+            await using var connection = preExistingConnection ?? await DataBaseConnectionFactory.CreateConnection();
             await using var command = new NpgsqlCommand(query, connection);
             command.Parameters.AddWithValue("@id", NpgsqlDbType.Bigint, id);
             
@@ -52,14 +50,15 @@ public static class BookCatalogHandler
         }
     }
 
-    public static async Task<(bool success, NpgsqlException exception, NpgsqlDataReader reader)> GetInfoAboutBook(ulong id)
+    public static async Task<(bool success, NpgsqlException exception, NpgsqlDataReader reader)> GetInfoAboutBook(ulong id, 
+        NpgsqlConnection preExistingConnection = null)
     {
         string query = $"SELECT * FROM \"BookCatalog\" WHERE \"BookId\" = @id;";
         
         try
         {
-            await using var connection = await IDbConnectionFactory.CreateConnection();
-            await using var command = new NpgsqlCommand(query, DataBaseConnectionFactory.CurrentConnection);
+            await using var connection = preExistingConnection ?? await DataBaseConnectionFactory.CreateConnection();
+            await using var command = new NpgsqlCommand(query, connection);
         
             command.Parameters.AddWithValue("@id", NpgsqlDbType.Bigint, id);
             
@@ -73,7 +72,8 @@ public static class BookCatalogHandler
         }
     }
 
-    public static async Task<(bool success, NpgsqlException exception)> UpdateBook(ulong id, int expectedVerion, Book updatedBook)
+    public static async Task<(bool success, NpgsqlException exception)> UpdateBook(ulong id, int expectedVerion, Book updatedBook, 
+        NpgsqlConnection preExistingConnection = null)
     {
         string query = $"UPDATE \"BookCatalog\" Set \"Title\" = @title, " +
                        $"\"Author\" = @author, \"Release Date\" = @releaseDate, " +
@@ -83,8 +83,8 @@ public static class BookCatalogHandler
         
         try
         {
-            await using var connection = await IDbConnectionFactory.CreateConnection();
-            await using var command = new NpgsqlCommand(query, DataBaseConnectionFactory.CurrentConnection);
+            await using var connection = preExistingConnection ?? await DataBaseConnectionFactory.CreateConnection();
+            await using var command = new NpgsqlCommand(query, connection);
         
             command.Parameters.AddWithValue("@title", NpgsqlDbType.Text, updatedBook.Title);
             command.Parameters.AddWithValue("@author", NpgsqlDbType.Text, updatedBook.Author);

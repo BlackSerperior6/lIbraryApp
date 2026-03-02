@@ -5,7 +5,8 @@ namespace LibraryAppWeb.Handlers;
 
 public static class InformatorHandler
 {
-    public static async Task<(bool success, NpgsqlException exception, Dictionary<Book, (DateTime, DateTime, ulong)> books)> IssuedBooksForAReader(ulong readerId)
+    public static async Task<(bool success, NpgsqlException exception, Dictionary<Book, (DateTime, DateTime, ulong)> books)> IssuedBooksForAReader(
+        ulong readerId, NpgsqlConnection preExistingConnection = null)
     {
         var books = new Dictionary<Book, (DateTime, DateTime, ulong)>();
 
@@ -25,7 +26,7 @@ public static class InformatorHandler
 
         try
         {
-            await using var connection = await IDbConnectionFactory.CreateConnection();
+            await using var connection = preExistingConnection ?? await DataBaseConnectionFactory.CreateConnection();
             await using var command = new NpgsqlCommand(query, connection);
 
             command.Parameters.AddWithValue("@readerId", NpgsqlTypes.NpgsqlDbType.Bigint, readerId);
@@ -49,7 +50,7 @@ public static class InformatorHandler
     }
 
     public static async Task<(bool success, NpgsqlException exception, Dictionary<Book, (DateTime, DateTime, ulong)>
-        books)> IssuedBooksForAPeriod(DateTime start, DateTime end)
+        books)> IssuedBooksForAPeriod(DateTime start, DateTime end, NpgsqlConnection preExistingConnection = null)
     {
         var books = new Dictionary<Book, (DateTime, DateTime, ulong)>();
 
@@ -69,11 +70,11 @@ public static class InformatorHandler
 
         try
         {
-            await using var connection = await IDbConnectionFactory.CreateConnection();
+            await using var connection = preExistingConnection ?? await DataBaseConnectionFactory.CreateConnection();
             await using var command = new NpgsqlCommand(query, connection);
 
             command.Parameters.AddWithValue("@startDate", NpgsqlTypes.NpgsqlDbType.Date, start);
-            command.Parameters.AddWithValue("@startDate", NpgsqlTypes.NpgsqlDbType.Date, end);
+            command.Parameters.AddWithValue("@endDate", NpgsqlTypes.NpgsqlDbType.Date, end);
 
             var reader = await command.ExecuteReaderAsync();
 

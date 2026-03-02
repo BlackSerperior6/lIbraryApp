@@ -3,6 +3,12 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Npgsql;
 using System.Threading.Tasks;
 using BCrypt.Net;
+using NpgsqlTypes;
+using Dapper;
+using Microsoft.AspNetCore.Identity;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 
 namespace LibraryAppWeb.Pages
 {
@@ -18,53 +24,42 @@ namespace LibraryAppWeb.Pages
 
         public async Task<IActionResult> OnPost()
         {
-            string saltQuery = $"SELECT \"saltHash\" from \"DBUsers\" WHERE 'Login' = @login;";
+            string query = $"SELECT \"PasswordHash\", \"PasswordSalt\", \"Role\" from \"DBUsers\" WHERE 'Login' = @login;";
 
             try
             {
-                await using var connection = await IDbConnectionFactory.CreateConnection();
-                await using var command = new NpgsqlCommand(query, connection);
+                await using var connection = await DataBaseConnectionFactory.CreateConnection();
 
-                command.Parameters.AddWithValue("@login", NpgsqlDbType.Text, Login);
+                var user = await connection.QueryFirstOrDefaultAsync<(string passwordHash, string passwordSalt, string role)>(query, new { login = Login });
 
-                var reader = await command.ExecuteReaderAsync();
-
-                await reader.ReadAsync();
-
-                if (reader.GEtTe(0) != 0)
+                if (!string.IsNullOrWhiteSpace(user.passwordSalt))
                 {
-                    await reader.CloseAsync();
-                    return (false, null);
+                    var hashedPassword = BCrypt.Net.BCrypt.HashPassword(Password + user.passwordSalt);
+
+                    bool isValid = BCrypt.Net.BCrypt.Verify(Password, hashedPassword);
+
+                    if (isValid)
+                    {
+                        var claims = new List<Claim>
+                        {
+                            new Claim(ClaimTypes.Name, Login),
+                            new Claim(ClaimTypes.Role, user.role)
+                        };
+
+                        await HttpContext.SignInAsync(
+                            CookieAuthenticationDefaults.AuthenticationScheme,
+                            new ClaimsPrincipal(new ClaimsIdentity(claims, "Cookies")));
+
+                        return RedirectToPage("OneDay, lil bro:)");
+                    }
                 }
-
-                await reader.CloseAsync();
-
             }
-            catch (NpgsqlException e)
+            catch (Exception e)
             {
-                ErrorMessage = e.Text;
+                ErrorMessage = $"Произошла ошибка:\n{e}. Пожалуйста, обратитесь к администратору!";
             }
 
-            try
-            {
-                await using var connection = await IDbConnectionFactory.CreateConnection();
-                await using var command = new NpgsqlCommand(query, connection);
-                
-                command.Parameters.AddWithValue("@lastName", NpgsqlDbType.Text, reader.LastName);
-                command.Parameters.AddWithValue("@firstName", NpgsqlDbType.Text, reader.FirstName);
-                command.Parameters.AddWithValue("@patronymic", NpgsqlDbType.Text, reader.Patronymic);
-                command.Parameters.AddWithValue("@issuedDate", NpgsqlDbType.Date, reader.IssuedDate);
-                command.Parameters.AddWithValue("@birthDate", NpgsqlDbType.Date, reader.BirthDate);
-                
-                await command.ExecuteNonQueryAsync();
-                return (true, null);
-            }
-            catch (NpgsqlException e)
-            {
-                return (false, e);
-            }
-
-            ErrorMessage = "�������� ����� ��� ������";
+            ErrorMessage = "Неверный логин или пароль!";
             return Page();
         }
     }

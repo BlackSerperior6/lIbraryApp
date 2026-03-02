@@ -1,4 +1,3 @@
-using System.Threading.Tasks;
 using LibraryAppWeb.Features;
 using Npgsql;
 using NpgsqlTypes;
@@ -7,7 +6,8 @@ namespace LibraryAppWeb.Handlers;
 
 public static class ReaderBaseHandler
 {
-    public static async Task<(bool success, NpgsqlException exception)> AddReaderAsync(Reader reader)
+    public static async Task<(bool success, NpgsqlException exception)> AddReaderAsync(Reader reader,
+        NpgsqlConnection preExistingConnection = null)
     {
         string query = $"INSERT INTO \"ReaderBase\" (\"ReaderID\", \"Last Name\", \"First Name\", " +
                        $"\"Patronymic\", \"Issued Date\", \"Birth Date\") " +
@@ -16,7 +16,7 @@ public static class ReaderBaseHandler
 
         try
         {
-            await using var connection = await IDbConnectionFactory.CreateConnection();
+            await using var connection = preExistingConnection ?? await DataBaseConnectionFactory.CreateConnection();
             await using var command = new NpgsqlCommand(query, connection);
             
             command.Parameters.AddWithValue("@lastName", NpgsqlDbType.Text, reader.LastName);
@@ -34,13 +34,14 @@ public static class ReaderBaseHandler
         }
     }
 
-    public static async Task<(bool success, NpgsqlException exceptionm, int affectedRows)> RemoveReaderAsync(ulong id)
+    public static async Task<(bool success, NpgsqlException exceptionm, int affectedRows)> RemoveReaderAsync(ulong id,
+        NpgsqlConnection preExistingConnection = null)
     {
         string query = $"DELETE FROM \"ReaderBase\" WHERE \"ReaderID\" = @id;";
         
         try
         {
-            await using var connection = await IDbConnectionFactory.CreateConnection();
+            await using var connection = preExistingConnection ?? await DataBaseConnectionFactory.CreateConnection();
             await using var command = new NpgsqlCommand(query, connection);
             command.Parameters.AddWithValue("@id", NpgsqlDbType.Bigint, id);
             
@@ -53,13 +54,14 @@ public static class ReaderBaseHandler
         }
     }
 
-    public static async Task<(bool success, NpgsqlException exception, NpgsqlDataReader reader)> GetInfoAboutReaderAsync(ulong id)
+    public static async Task<(bool success, NpgsqlException exception, NpgsqlDataReader reader)> GetInfoAboutReaderAsync(ulong id,
+        NpgsqlConnection preExistingConnection = null)
     {
         string query = $"SELECT * FROM \"ReaderBase\" WHERE \"ReaderID\" = @id;";
 
         try
         {
-            await using var connection = await IDbConnectionFactory.CreateConnection();
+            await using var connection = preExistingConnection ?? await DataBaseConnectionFactory.CreateConnection();
             await using var command = new NpgsqlCommand(query, connection);
             command.Parameters.AddWithValue("@id", NpgsqlDbType.Bigint, id);
 
@@ -72,7 +74,8 @@ public static class ReaderBaseHandler
         }
     }
 
-    public static async Task<(bool success, NpgsqlException exception)> UpdateReaderAsync(ulong id, int expectedVersion, Reader updatedReader)
+    public static async Task<(bool success, NpgsqlException exception)> UpdateReaderAsync(ulong id, int expectedVersion, Reader updatedReader, 
+        NpgsqlConnection preExistingConnection = null)
     {
         string query = $"UPDATE \"ReaderBase\" Set \"Last Name\" = @lastName, " +
                        $"\"First Name\" = @firstName, \"Patronymic\" = @patronymic" +
@@ -82,7 +85,7 @@ public static class ReaderBaseHandler
 
         try
         {
-            await using var connection = await IDbConnectionFactory.CreateConnection();
+            await using var connection = preExistingConnection ?? await DataBaseConnectionFactory.CreateConnection();
             await using var command = new NpgsqlCommand(query, connection);
 
             command.Parameters.AddWithValue("@lastName", NpgsqlDbType.Text, updatedReader.LastName);
