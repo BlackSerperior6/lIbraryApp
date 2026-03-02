@@ -1,0 +1,162 @@
+﻿<!-- Views/Dashboard/Index.cshtml -->
+@{
+    ViewData["Title"] = "Панель управления";
+}
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Left sidebar with user info -->
+        <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar p-0">
+            <div class="position-sticky pt-3">
+                <div class="user-info p-3 bg-primary text-white">
+                    <h6 class="mb-0">@ViewBag.Username</h6>
+                    <small>Библиотекарь</small>
+                </div>
+
+                <div class="list-group list-group-flush rounded-0">
+                    <a href="#readerSection" class="list-group-item list-group-item-action" data-bs-toggle="collapse">
+                        <i class="fas fa-users me-2"></i>Читатели
+                    </a>
+                    <a href="#bookSection" class="list-group-item list-group-item-action" data-bs-toggle="collapse">
+                        <i class="fas fa-book me-2"></i>Книги
+                    </a>
+                    <a href="#reportSection" class="list-group-item list-group-item-action" data-bs-toggle="collapse">
+                        <i class="fas fa-chart-bar me-2"></i>Отчеты
+                    </a>
+                    <a href="#loanSection" class="list-group-item list-group-item-action" data-bs-toggle="collapse">
+                        <i class="fas fa-exchange-alt me-2"></i>Выдача/Прием
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content - All buttons directly accessible -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+            <div class="d-flex justify-content-between flex-wrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">Панель управления</h1>
+            </div>
+
+            <!-- Reader Management Section (replaces GroupBox1) -->
+            <div class="card mb-4 shadow-sm" id="readerSection">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="card-title mb-0">Управление читателями</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-sm-6 col-md-3">
+                            <a asp-action="AddReader" class="btn btn-outline-primary w-100 h-100 py-3">
+                                <i class="fas fa-user-plus d-block fs-1 mb-2"></i>
+                                <span>Добавить читателя</span>
+                            </a>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <a asp-action="DeleteReader" class="btn btn-outline-danger w-100 h-100 py-3">
+                                <i class="fas fa-user-minus d-block fs-1 mb-2"></i>
+                                <span>Удалить читателя</span>
+                            </a>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <a asp-action="EditReader" class="btn btn-outline-warning w-100 h-100 py-3">
+                                <i class="fas fa-user-edit d-block fs-1 mb-2"></i>
+                                <span>Редактировать читателя</span>
+                            </a>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <a asp-action="ReaderInfo" class="btn btn-outline-info w-100 h-100 py-3">
+                                <i class="fas fa-info-circle d-block fs-1 mb-2"></i>
+                                <span>Информация о читателе</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Book Management Section (replaces GroupBox2) -->
+            <div class="card mb-4 shadow-sm" id="bookSection">
+                <div class="card-header bg-success text-white">
+                    <h5 class="card-title mb-0">Управление каталогом</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-sm-6 col-md-3">
+                            <a asp-action="AddBook" class="btn btn-outline-success w-100 h-100 py-3">
+                                <i class="fas fa-book-plus d-block fs-1 mb-2"></i>
+                                <span>Добавить книгу</span>
+                            </a>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <a asp-action="RemoveBook" class="btn btn-outline-danger w-100 h-100 py-3">
+                                <i class="fas fa-book-minus d-block fs-1 mb-2"></i>
+                                <span>Удалить книгу</span>
+                            </a>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <a asp-action="EditBook" class="btn btn-outline-warning w-100 h-100 py-3">
+                                <i class="fas fa-book-edit d-block fs-1 mb-2"></i>
+                                <span>Редактирование книги</span>
+                            </a>
+                        </div>
+                        <div class="col-sm-6 col-md-3">
+                            <a asp-action="BookInfo" class="btn btn-outline-info w-100 h-100 py-3">
+                                <i class="fas fa-book-open d-block fs-1 mb-2"></i>
+                                <span>Информация о книге</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Section (replaces GroupBox3) -->
+            <div class="card mb-4 shadow-sm" id="reportSection">
+                <div class="card-header bg-info text-white">
+                    <h5 class="card-title mb-0">Справочная информация</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-md-4">
+                            <a asp-action="ReturnedBooksReport" class="btn btn-outline-secondary w-100 py-4">
+                                <i class="fas fa-calendar-check d-block fs-1 mb-2"></i>
+                                <span>Книги, возвращенные за период</span>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a asp-action="BorrowedBooksReport" class="btn btn-outline-secondary w-100 py-4">
+                                <i class="fas fa-calendar-plus d-block fs-1 mb-2"></i>
+                                <span>Книги, взятые за период</span>
+                            </a>
+                        </div>
+                        <div class="col-md-4">
+                            <a asp-action="ReaderBooksList" class="btn btn-outline-secondary w-100 py-4">
+                                <i class="fas fa-list d-block fs-1 mb-2"></i>
+                                <span>Список книг у читателя</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loan Management Section (replaces GroupBox4) -->
+            <div class="card mb-4 shadow-sm" id="loanSection">
+                <div class="card-header bg-warning text-white">
+                    <h5 class="card-title mb-0">Управление выдачей/приемом</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-md-6">
+                            <a asp-action="BorrowBook" class="btn btn-outline-primary w-100 py-4">
+                                <i class="fas fa-hand-holding-heart d-block fs-1 mb-2"></i>
+                                <span>Выдать книгу читателю</span>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a asp-action="ReturnBook" class="btn btn-outline-success w-100 py-4">
+                                <i class="fas fa-book-return d-block fs-1 mb-2"></i>
+                                <span>Вернуть книгу от читателя</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
