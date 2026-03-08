@@ -3,19 +3,6 @@ using LibraryApplication.Controllers;
 using LibraryApplication.InputForms;
 using LibraryApplication.Structs;
 using Microsoft.VisualBasic;
-using Npgsql;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.DirectoryServices.ActiveDirectory;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading.Tasks.Dataflow;
-using System.Windows.Forms;
-using static System.Reflection.Metadata.BlobBuilder;
 
 namespace LibraryApplication
 {

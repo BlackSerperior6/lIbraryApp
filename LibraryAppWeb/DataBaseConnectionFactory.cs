@@ -21,6 +21,8 @@ public static class DataBaseConnectionFactory
         }
 
         _connectionString = $"{baseConnectionString};Password={dbPassword};";
+
+        CreateConnection();
     }
 
     public static async Task<NpgsqlConnection> CreateConnection() 

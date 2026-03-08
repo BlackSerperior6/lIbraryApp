@@ -11,10 +11,5 @@ namespace LibraryAppWeb.Pages
         {
             _logger = logger;
         }
-
-        public void OnGet()
-        {
-
-        }
     }
 }
