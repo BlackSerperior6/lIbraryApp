@@ -26,7 +26,9 @@ public static class InformatorHandler
 
         try
         {
-            await using var connection = preExistingConnection ?? await DataBaseConnectionFactory.CreateConnection();
+            await using var connection = preExistingConnection ?? DataBaseConnectionFactory.CreateConnection();
+            await connection.OpenAsync();
+
             await using var command = new NpgsqlCommand(query, connection);
 
             command.Parameters.AddWithValue("@readerId", NpgsqlTypes.NpgsqlDbType.Bigint, readerId);
@@ -70,7 +72,9 @@ public static class InformatorHandler
 
         try
         {
-            await using var connection = preExistingConnection ?? await DataBaseConnectionFactory.CreateConnection();
+            await using var connection = preExistingConnection ?? DataBaseConnectionFactory.CreateConnection();
+            await connection.OpenAsync();
+
             await using var command = new NpgsqlCommand(query, connection);
 
             command.Parameters.AddWithValue("@startDate", NpgsqlTypes.NpgsqlDbType.Date, start);

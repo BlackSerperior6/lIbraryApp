@@ -21,14 +21,7 @@ public static class DataBaseConnectionFactory
         }
 
         _connectionString = $"{baseConnectionString};Password={dbPassword};";
-
-        CreateConnection();
     }
 
-    public static async Task<NpgsqlConnection> CreateConnection() 
-    {
-        using var connection = new NpgsqlConnection(_connectionString);
-        await connection.OpenAsync();
-        return connection;
-    }
+    public static NpgsqlConnection CreateConnection() => new NpgsqlConnection(_connectionString);
 }

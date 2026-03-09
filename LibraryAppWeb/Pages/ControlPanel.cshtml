@@ -4,9 +4,13 @@
     ViewData["Title"] = "Панель управления";
 }
 
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success">@Model.SuccessMessage</div>
+}
+
 <div class="container-fluid mt-4">
     <div class="row">
-        <!-- Left sidebar with user info -->
         <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar p-0">
             <div class="position-sticky pt-3">
                 <div class="user-info p-3 bg-primary text-white">
@@ -45,22 +49,19 @@
                 <div class="card-body">
                     <div class="row g-2">
                         <div class="col-sm-6 col-md-3">
-                            <a asp-action="AddReader" class="btn btn-outline-primary w-100 h-100 py-3">
-                                <i class="fas fa-user-plus d-block fs-1 mb-2"></i>
-                                <span>Добавить читателя</span>
-                            </a>
+                            <a class="btn btn-outline-primary w-100 h-100 py-3" asp-area="" asp-page="/Create/Reader">Создать читателя</a>
                         </div>
                         <div class="col-sm-6 col-md-3">
-                            <a asp-action="DeleteReader" class="btn btn-outline-danger w-100 h-100 py-3">
-                                <i class="fas fa-user-minus d-block fs-1 mb-2"></i>
-                                <span>Удалить читателя</span>
-                            </a>
+                            <a class="btn btn-outline-danger w-100 h-100 py-3" asp-area="" asp-page="/Delete/Reader">Удалить читателя</a>
                         </div>
                         <div class="col-sm-6 col-md-3">
-                            <a asp-action="EditReader" class="btn btn-outline-warning w-100 h-100 py-3">
-                                <i class="fas fa-user-edit d-block fs-1 mb-2"></i>
-                                <span>Редактировать читателя</span>
-                            </a>
+                            <form method="post" asp-page-handler="RedactReader">
+                                <button type="submit" class="btn btn-outline-warning w-100 h-100 py-3">Редактировать читателя</button>
+                                <div class="form-group">
+                                    <label>Id читателя</label>
+                                    <input asp-for="RedactReaderId" class="form-control" />
+                                </div>
+                            </form>
                         </div>
                         <div class="col-sm-6 col-md-3">
                             <a asp-action="ReaderInfo" class="btn btn-outline-info w-100 h-100 py-3">
@@ -80,16 +81,10 @@
                 <div class="card-body">
                     <div class="row g-2">
                         <div class="col-sm-6 col-md-3">
-                            <a asp-action="AddBook" class="btn btn-outline-success w-100 h-100 py-3">
-                                <i class="fas fa-book-plus d-block fs-1 mb-2"></i>
-                                <span>Добавить книгу</span>
-                            </a>
+                            <a class="btn btn-outline-success w-100 h-100 py-3" asp-area="" asp-page="/Create/Book">Создать книгу</a>
                         </div>
                         <div class="col-sm-6 col-md-3">
-                            <a asp-action="RemoveBook" class="btn btn-outline-danger w-100 h-100 py-3">
-                                <i class="fas fa-book-minus d-block fs-1 mb-2"></i>
-                                <span>Удалить книгу</span>
-                            </a>
+                            <a class="btn btn-outline-danger w-100 h-100 py-3" asp-area="" asp-page="/Delete/Book">Удалить книгу</a>
                         </div>
                         <div class="col-sm-6 col-md-3">
                             <a asp-action="EditBook" class="btn btn-outline-warning w-100 h-100 py-3">

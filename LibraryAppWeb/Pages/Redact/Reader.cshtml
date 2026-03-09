@@ -1,0 +1,34 @@
+﻿@page
+@model LibraryAppWeb.Pages.Redact.ReaderModel
+<div class="redact-reader-form">
+    <h2>Редактировать читателя</h2>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">@Model.ErrorMessage</div>
+    }
+
+    <form method="post">
+        <div class="form-group">
+            <label>Фамилия</label>
+            <input asp-for="LastName" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label>Имя</label>
+            <input asp-for="FirstName" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label>Отчество</label>
+            <input asp-for="Patronymic" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label>Дата выдачи билета</label>
+            <input asp-for="IssuedDate" type="datetime-local" class="form-control" />
+        </div>
+        <div class="form-group">
+            <label>Дата рождения читателя</label>
+            <input asp-for="Birthday" type="datetime-local" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Завершить редактирование читателя</button>
+    </form>
+</div>

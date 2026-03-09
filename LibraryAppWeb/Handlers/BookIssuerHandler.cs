@@ -11,7 +11,9 @@ public class BookIssuerHandler
 
         try 
         {
-            await using var connection = await DataBaseConnectionFactory.CreateConnection();
+            await using var connection = DataBaseConnectionFactory.CreateConnection();
+            await connection.OpenAsync();
+
             await using var transaction = await connection.BeginTransactionAsync();
 
             try
@@ -45,14 +47,15 @@ public class BookIssuerHandler
                     command.Parameters.AddWithValue("@@plannedReturnDate", NpgsqlTypes.NpgsqlDbType.Date, plannedReturnDate);
 
                     await command.ExecuteNonQueryAsync();
+                    await transaction.CommitAsync();
                     return (true, null);
                 }
 
-                transaction.Commit();
+                
             }
             catch (NpgsqlException e)
             {
-                transaction.Rollback();
+                await transaction.RollbackAsync();
                 return (false, e);
             }
 
@@ -73,7 +76,9 @@ public class BookIssuerHandler
 
         try
         {
-            await using var connection = preExistingConnection ?? await DataBaseConnectionFactory.CreateConnection();
+            await using var connection = preExistingConnection ?? DataBaseConnectionFactory.CreateConnection();
+            await connection.OpenAsync();
+
             await using var command = new NpgsqlCommand(query, connection);
 
             command.Parameters.AddWithValue("@returnDate", NpgsqlTypes.NpgsqlDbType.Date, returnDate);

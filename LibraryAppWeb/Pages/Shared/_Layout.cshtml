@@ -21,18 +21,21 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="Authentication">Log In</a>
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Authentication">Log In</a>
                         </li>
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li><hr class="dropdown-divider"></li>
                             <li class="nav-item">
-                                <form asp-page="LogOut" method="post">
+                                <form asp-page="/LogOut" method="post">
                                     <button type="submit" class="btn btn-no-outline">Log Out</button>
                                 </form>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/ControlPanel">Control Panel</a>
                             </li>
                         }
                     </ul>

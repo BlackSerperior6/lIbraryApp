@@ -1,0 +1,23 @@
+﻿@page
+@model LibraryAppWeb.Pages.Delete.ReaderModel
+<div class="creat-book-form">
+    <h2>Удаление книги</h2>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+        <div class="alert alert-danger">@Model.ErrorMessage</div>
+    }
+
+    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+    {
+        <div class="alert alert-success">@Model.SuccessMessage</div>
+    }
+
+    <form method="post">
+        <div class="form-group">
+            <label>Id читателя</label>
+            <input asp-for="Id" type="number" step="1" min="1" max="18446744073709551615" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Удалить читателя</button>
+    </form>
+</div>

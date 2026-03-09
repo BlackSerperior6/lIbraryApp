@@ -7,18 +7,19 @@ namespace LibraryAppWeb.Pages
     [Authorize]
     public class ControlPanelModel : PageModel
     {
-        public async Task<IActionResult> OnGetAsync()
-        {
-            if (!User.Identity.IsAuthenticated)
-                return RedirectToPage("/Authentication");
+        [BindProperty]
+        public long RedactReaderId { get; set; }
 
+        public string SuccessMessage { get; set; }
+
+        public string ErrorMessage { get; set; }
+
+        public IActionResult OnGet(string successMessage = null)
+        {
+            SuccessMessage = successMessage;
             return Page();
-        }
+        } 
 
-        [HttpPost]
-        public async Task<IActionResult> EditReader()
-        {
-
-        }
+        public IActionResult OnPostRedactReader() => RedirectToPage("/Redact/Reader", new { id = RedactReaderId });
     }
 }
