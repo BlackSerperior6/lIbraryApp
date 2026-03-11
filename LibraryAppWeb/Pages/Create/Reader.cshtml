@@ -8,11 +8,6 @@
         <div class="alert alert-danger">@Model.ErrorMessage</div>
     }
 
-    @if (!string.IsNullOrEmpty(Model.SuccessMessage))
-    {
-        <div class="alert alert-success">@Model.SuccessMessage</div>
-    }
-
     <form method="post">
         <div class="form-group">
             <label>Фамилия</label>

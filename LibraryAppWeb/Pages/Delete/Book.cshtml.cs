@@ -7,7 +7,7 @@ namespace LibraryAppWeb.Pages.Delete
     public class BookModel : PageModel
     {
         [BindProperty]
-        public ulong Id { get; set; }
+        public long Id { get; set; } = 1;
 
         public string SuccessMessage { get; set; }
 
@@ -32,8 +32,7 @@ namespace LibraryAppWeb.Pages.Delete
                 return Page();
             }
 
-            SuccessMessage = " нига была успешно удален!";
-            return Page();
+            return RedirectToPage("/ControlPanel", new { successMessage = " нига была успешно удалена!" });
         }
     }
 }

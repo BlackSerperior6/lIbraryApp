@@ -1,6 +1,7 @@
 using LibraryAppWeb.Features;
 using Npgsql;
 using NpgsqlTypes;
+using System.Data;
 
 namespace LibraryAppWeb.Handlers;
 
@@ -33,7 +34,7 @@ public static class BookCatalogHandler
         }
     }
 
-    public static async Task<(bool success, NpgsqlException exception, int affectedRow)> RemoveBookAsync(ulong id, NpgsqlConnection preExistingConnection = null)
+    public static async Task<(bool success, NpgsqlException exception, int affectedRow)> RemoveBookAsync(long id, NpgsqlConnection preExistingConnection = null)
     {
         string query = $"DELETE FROM \"BookCatalog\" WHERE \"BookId\" = @id;";
         
@@ -54,21 +55,21 @@ public static class BookCatalogHandler
         }
     }
 
-    public static async Task<(bool success, NpgsqlException exception, NpgsqlDataReader reader)> GetInfoAboutBookAsync(ulong id, 
+    public static async Task<(bool success, NpgsqlException exception, NpgsqlDataReader reader)> GetInfoAboutBookAsync(long id, 
         NpgsqlConnection preExistingConnection = null)
     {
         string query = $"SELECT * FROM \"BookCatalog\" WHERE \"BookId\" = @id;";
         
         try
         {
-            await using var connection = preExistingConnection ?? DataBaseConnectionFactory.CreateConnection();
+            var connection = preExistingConnection ?? DataBaseConnectionFactory.CreateConnection();
             await connection.OpenAsync();
 
             await using var command = new NpgsqlCommand(query, connection);
         
             command.Parameters.AddWithValue("@id", NpgsqlDbType.Bigint, id);
             
-            var reader = await command.ExecuteReaderAsync();
+            var reader = await command.ExecuteReaderAsync(CommandBehavior.CloseConnection);
             return (true, null, reader);
 
         }
@@ -78,14 +79,14 @@ public static class BookCatalogHandler
         }
     }
 
-    public static async Task<(bool success, NpgsqlException exception)> UpdateBookAsync(ulong id, int expectedVerion, Book updatedBook, 
+    public static async Task<(bool success, NpgsqlException exception)> UpdateBookAsync(long id, long expectedVerion, Book updatedBook, 
         NpgsqlConnection preExistingConnection = null)
     {
         string query = $"UPDATE \"BookCatalog\" Set \"Title\" = @title, " +
                        $"\"Author\" = @author, \"Release Date\" = @releaseDate, " +
-                       $"\"Arrival Date\" = @arrivalDate " +
-                       $"\"version\" = {expectedVerion + 1}" +
-                       $"WHERE \"BookId\" = @id and \"version\" = {expectedVerion};";
+                       $"\"Arrival Date\" = @arrivalDate, " +
+                       $"\"version\" = '{expectedVerion + 1}'" +
+                       $"WHERE \"BookId\" = @id and \"version\" = '{expectedVerion}';";
         
         try
         {
@@ -103,7 +104,7 @@ public static class BookCatalogHandler
             int updated =  await command.ExecuteNonQueryAsync();
 
             if (updated == 0)
-                throw new NpgsqlException("������ ������ ���� �������, ���� ��������� �� ����� ��������. ����������, ���������� ��� ���!");
+                throw new NpgsqlException("Запись данной книги была изменена или обновлена за время вашей работы. Пожалуйста, начните процесс сначала!");
 
             return (true, null);
 

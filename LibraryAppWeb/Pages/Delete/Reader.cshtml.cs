@@ -10,16 +10,13 @@ namespace LibraryAppWeb.Pages.Delete
     public class ReaderModel : PageModel
     {
         [BindProperty]
-        public long Id { get; set; }
-
-        public string SuccessMessage { get; set; }
+        public long Id { get; set; } = 1;
 
         public string ErrorMessage { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {
             ErrorMessage = string.Empty;
-            SuccessMessage = string.Empty;
 
             var result = await ReaderBaseHandler.RemoveReaderAsync(Id);
 
@@ -35,8 +32,7 @@ namespace LibraryAppWeb.Pages.Delete
                 return Page();
             }
 
-            SuccessMessage = "Читатель был успешно удален!";
-            return Page();
+            return RedirectToPage("/ControlPanel", new { successMessage = "Читатель был успешно удален!" });
         }
     }
 }

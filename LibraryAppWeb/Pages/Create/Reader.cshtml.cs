@@ -25,15 +25,10 @@ namespace LibraryAppWeb.Pages.Create
         [BindProperty]
         public DateTime Birthday { get; set; } = DateTime.Now;
 
-        public string SuccessMessage { get; set; }
-
         public string ErrorMessage { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            ErrorMessage = string.Empty;
-            SuccessMessage = string.Empty;
-
             if (string.IsNullOrWhiteSpace(LastName) || string.IsNullOrWhiteSpace(FirstName) ||
                 string.IsNullOrWhiteSpace(Patronymic))
             {
@@ -51,8 +46,7 @@ namespace LibraryAppWeb.Pages.Create
                 return Page();
             }
 
-            SuccessMessage = "Читатель был успешно добавлен!";
-            return Page();
+            return RedirectToPage("/ControlPanel", new { successMessage = "Читатель был успешно добавлен!" });
         }
     }
 }

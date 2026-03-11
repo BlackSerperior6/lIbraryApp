@@ -21,15 +21,10 @@ namespace LibraryAppWeb.Pages.Create
         [BindProperty]
         public DateTime ReleasedDate { get; set; } = DateTime.Now;
 
-        public string SuccessMessage { get; set; }
-
         public string ErrorMessage { get; set; }
 
         public async Task<IActionResult> OnPostAsync()
         {
-            ErrorMessage = string.Empty;
-            SuccessMessage = string.Empty;
-
             if (string.IsNullOrWhiteSpace(Title) || string.IsNullOrWhiteSpace(Author))
             {
                 ErrorMessage = "Ни одно из полей не должно быть пустым!";
@@ -46,8 +41,7 @@ namespace LibraryAppWeb.Pages.Create
                 return Page();
             }
 
-            SuccessMessage = "Книга была успешна добавлена!";
-            return Page();
+            return RedirectToPage("/ControlPanel", new { successMessage = "Книга была успешна добавлена!" });
         }
     }
 }

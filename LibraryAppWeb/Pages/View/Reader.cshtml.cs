@@ -1,10 +1,9 @@
-using LibraryAppWeb.Features;
 using LibraryAppWeb.Handlers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
-namespace LibraryAppWeb.Pages.Redact
+namespace LibraryAppWeb.Pages.View
 {
     [Authorize]
     public class ReaderModel : PageModel
@@ -24,9 +23,7 @@ namespace LibraryAppWeb.Pages.Redact
         [BindProperty]
         public DateTime Birthday { get; set; }
 
-        public string ErrorMessage { get; set; }
-
-        public async Task<IActionResult> OnGetAsync(long id)
+        public async Task<IActionResult> OnGetAsync(int id)
         {
             var selectResult = await ReaderBaseHandler.GetInfoAboutReaderAsync(id);
 
@@ -52,7 +49,7 @@ namespace LibraryAppWeb.Pages.Redact
                 HttpContext.Session.SetString("ReaderId", id.ToString());
                 HttpContext.Session.SetString("EntryVersion", dbReader.GetInt64(6).ToString());
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 return RedirectToPage("/ControlPanel", new { errorMessage = "Читатель с указанным id не найден!!" });
             }
@@ -60,37 +57,6 @@ namespace LibraryAppWeb.Pages.Redact
             await dbReader.CloseAsync();
 
             return Page();
-        }
-
-        public async Task<IActionResult> OnPostAsync()
-        {
-            if (string.IsNullOrWhiteSpace(LastName) || string.IsNullOrWhiteSpace(FirstName) ||
-                string.IsNullOrWhiteSpace(Patronymic))
-            {
-                ErrorMessage = "Ни одно из полей не должно быть пустым!";
-                return Page();
-            }
-
-            var readerIdString = HttpContext.Session.GetString("ReaderId");
-            var entryVersionString = HttpContext.Session.GetString("EntryVersion");
-
-            if (!long.TryParse(readerIdString, out var readerId) || !long.TryParse(entryVersionString, out var entryVersion))
-            {
-                ErrorMessage = "Не удалось получить данные из HTTP контекста!";
-                return Page();
-            }
-
-            var currentReader = new Reader(LastName, FirstName, Patronymic, IssuedDate, Birthday);
-
-            var updateResult = await ReaderBaseHandler.UpdateReaderAsync(readerId, entryVersion, currentReader);
-
-            if (!updateResult.success)
-            {
-                ErrorMessage = $"Ошибка при выполнение запроса: {updateResult.exception}";
-                return Page();
-            }
-
-            return RedirectToPage("/ControlPanel", new { successMessage = "Читатель был успешно отредактирован!" });
         }
     }
 }

@@ -9,6 +9,11 @@
     <div class="alert alert-success">@Model.SuccessMessage</div>
 }
 
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+        <div class="alert alert-danger">@Model.ErrorMessage</div>
+}
+
 <div class="container-fluid mt-4">
     <div class="row">
         <div class="col-md-3 col-lg-2 d-md-block bg-light sidebar p-0">
@@ -64,10 +69,13 @@
                             </form>
                         </div>
                         <div class="col-sm-6 col-md-3">
-                            <a asp-action="ReaderInfo" class="btn btn-outline-info w-100 h-100 py-3">
-                                <i class="fas fa-info-circle d-block fs-1 mb-2"></i>
-                                <span>Информация о читателе</span>
-                            </a>
+                            <form method="post" asp-page-handler="ViewReader">
+                                <button type="submit" class="btn btn-outline-info w-100 h-100 py-3">Информация о читателе</button>
+                                <div class="form-group">
+                                    <label>Id читателя</label>
+                                    <input asp-for="ViewReaderId" class="form-control" />
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -87,16 +95,22 @@
                             <a class="btn btn-outline-danger w-100 h-100 py-3" asp-area="" asp-page="/Delete/Book">Удалить книгу</a>
                         </div>
                         <div class="col-sm-6 col-md-3">
-                            <a asp-action="EditBook" class="btn btn-outline-warning w-100 h-100 py-3">
-                                <i class="fas fa-book-edit d-block fs-1 mb-2"></i>
-                                <span>Редактирование книги</span>
-                            </a>
+                            <form method="post" asp-page-handler="RedactBook">
+                                <button type="submit" class="btn btn-outline-warning w-100 h-100 py-3">Редактировать книгу</button>
+                                <div class="form-group">
+                                    <label>Id книги</label>
+                                    <input asp-for="RedactBookId" class="form-control" />
+                                </div>
+                            </form>
                         </div>
                         <div class="col-sm-6 col-md-3">
-                            <a asp-action="BookInfo" class="btn btn-outline-info w-100 h-100 py-3">
-                                <i class="fas fa-book-open d-block fs-1 mb-2"></i>
-                                <span>Информация о книге</span>
-                            </a>
+                            <form method="post" asp-page-handler="ViewBook">
+                                <button type="submit" class="btn btn-outline-info w-100 h-100 py-3">Информация о книге</button>
+                                <div class="form-group">
+                                    <label>Id книги</label>
+                                    <input asp-for="ViewBookId" class="form-control" />
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>

@@ -1,11 +1,11 @@
 ﻿@page
-@model LibraryAppWeb.Pages.Create.BookModel
-<div class="creat-book-form">
-    <h2>Создание книги</h2>
+@model LibraryAppWeb.Pages.Redact.BookModel
+<div class="redact-book-form">
+    <h2>Редактирование книги</h2>
 
     @if (!string.IsNullOrEmpty(Model.ErrorMessage))
     {
-            <div class="alert alert-danger">@Model.ErrorMessage</div>
+        <div class="alert alert-danger">@Model.ErrorMessage</div>
     }
 
     <form method="post">
@@ -25,6 +25,6 @@
             <label>Дата выпуска</label>
             <input asp-for="ReleasedDate" type="datetime-local" class="form-control" />
         </div>
-        <button type="submit" class="btn btn-primary">Добавить книгу</button>
+        <button type="submit" class="btn btn-primary">Закончить редактирование</button>
     </form>
 </div>
