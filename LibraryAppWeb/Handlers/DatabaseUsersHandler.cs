@@ -3,16 +3,15 @@ using Npgsql;
 using NpgsqlTypes;
 using System.Data;
 
-namespace LibraryAppWeb.Handlers
+namespace LibraryAppWeb.Handlers;
 
 public static class DatabaseUsersHandler
 {
-    public static async Task<(bool success, NpgsqlException exception)> 
-    AddUserAsync(DatabaseUser user)
+    public static async Task<(bool success, NpgsqlException exception)> AddUserAsync(DatabaseUser user)
     {
         string query = $"INSERT INTO \"DatabaseUsers\" (\"UserId\", \"Login\", \"PasswordHash\", " +
-                       $"\"PasswordSalt\", \"Role\", \"version\") " +
-                       $"VALUES (DEFAULT, @login, @passwordHash, @passwordSalt, " +
+                       $"\"Role\", \"version\") " +
+                       $"VALUES (DEFAULT, @login, @passwordHash, " +
                        $"@role, DEFAULT);";
         
         try
@@ -20,16 +19,13 @@ public static class DatabaseUsersHandler
             await using var connection = DataBaseConnectionFactory.CreateConnection();
             await connection.OpenAsync();
 
-            var passwordSalt = bcrypt.genSalt(5);
-
-            string hashedPassword = bcrypt.Hash(user.Password, passwordSalt);
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(user.Password);
 
             await using var command = new NpgsqlCommand(query, connection);
 
             command.Parameters.AddWithValue("@login", NpgsqlDbType.Text, user.Login);
             command.Parameters.AddWithValue("@passwordHash", NpgsqlDbType.Text, hashedPassword);
-            command.Parameters.AddWithValue("@passwordSalt", NpgsqlDbType.Text, passwordSalt);
-            command.Parameters.AddWithValue("@role", NpgsqlDbType.Date, user.Role);
+            command.Parameters.AddWithValue("@role", NpgsqlDbType.Text, user.Role);
 
             await command.ExecuteNonQueryAsync();
             return (true, null);
@@ -39,12 +35,9 @@ public static class DatabaseUsersHandler
         {
             return (false, e);
         }
-
-
     }
 
-    public static async Task<(bool success, NpgsqlException exception, int affectedRows)> 
-    RemoveUserAsync(long id)
+    public static async Task<(bool success, NpgsqlException exception, int affectedRows)> RemoveUserAsync(long id)
     {
         string query = $"DELETE FROM \"DatabaseUsers\" WHERE \"UserId\" = @id;";
         
@@ -65,8 +58,7 @@ public static class DatabaseUsersHandler
         }
     }
 
-    public static async Task<(bool success, NpgsqlException exception, NpgsqlDataReader reader)> 
-    GetInfoAboutUsserAsync(long id)
+    public static async Task<(bool success, NpgsqlException exception, NpgsqlDataReader reader)> GetInfoAboutUserAsync(long id)
     {
         string query = $"SELECT * FROM \"DatabaseUsers\" WHERE \"UserId\" = @id;";
 
@@ -87,11 +79,10 @@ public static class DatabaseUsersHandler
         }
     }
 
-    public static async Task<(bool success, NpgsqlException exception)> UpdateUSerAsync(long id, 
-    long currentVersion, DatabaseUser updatedUser)
+    public static async Task<(bool success, NpgsqlException exception)> UpdateUserAsync(long id, long currentVersion, DatabaseUser updatedUser)
     {
         string query = $"UPDATE \"DatabaseUsers\" Set \"Login\" = @login, " +
-                       $"\"PasswordHash\" = @passwordHash, \"PasswordSalt\" = @passwordSalt" +
+                       $"\"PasswordHash\" = @passwordHash" +
                        $", \"Role\" = @role, " +
                        $"\"version\" = '{currentVersion + 1}'" + 
                        $"WHERE \"UserId\" = @id AND \"version\" = '{currentVersion}';";
@@ -101,16 +92,14 @@ public static class DatabaseUsersHandler
             await using var connection = DataBaseConnectionFactory.CreateConnection();
             await connection.OpenAsync();
 
-            var passwordSalt = bcrypt.genSalt(5);
-
-            string hashedPassword = bcrypt.Hash(updatedUser.Password, passwordSalt);
+            string hashedPassword = BCrypt.Net.BCrypt.HashPassword(updatedUser.Password);
 
             await using var command = new NpgsqlCommand(query, connection);
 
-            command.Parameters.AddWithValue("@login", NpgsqlDbType.Text, user.Login);
+            command.Parameters.AddWithValue("@login", NpgsqlDbType.Text, updatedUser.Login);
             command.Parameters.AddWithValue("@passwordHash", NpgsqlDbType.Text, hashedPassword);
-            command.Parameters.AddWithValue("@passwordSalt", NpgsqlDbType.Text, passwordSalt);
-            command.Parameters.AddWithValue("@role", NpgsqlDbType.Date, user.Role);
+            command.Parameters.AddWithValue("@role", NpgsqlDbType.Text, updatedUser.Role);
+            command.Parameters.AddWithValue("@id", NpgsqlDbType.Bigint, id);
 
             var updated = await command.ExecuteNonQueryAsync();
 
@@ -123,6 +112,27 @@ public static class DatabaseUsersHandler
         {
             return (false, e);
         }
+    }
+
+    public static async Task<(bool success, NpgsqlException exception, NpgsqlDataReader reader)> GetAllUsers()
+    {
+        string query = "SELECT * FROM \"DatabaseUsers\" ORDER BY \"UserId\" ASC";
+
+        try
+        {
+            var connection = DataBaseConnectionFactory.CreateConnection();
+            await connection.OpenAsync();
+
+            await using var command = new NpgsqlCommand(query, connection);
+
+            var reader = await command.ExecuteReaderAsync(CommandBehavior.CloseConnection);
+            return (true, null, reader);
+        }
+        catch (NpgsqlException e)
+        {
+            return (false, e, null);
+        }
+
     }
 
 }

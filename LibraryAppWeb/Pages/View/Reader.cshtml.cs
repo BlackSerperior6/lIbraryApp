@@ -28,14 +28,14 @@ namespace LibraryAppWeb.Pages.View
             var selectResult = await ReaderBaseHandler.GetInfoAboutReaderAsync(id);
 
             if (!selectResult.success)
-                return RedirectToPage("/ControlPanel", new { errorMessage = $"��������� ������ �� ����� ���������� �������:\n{selectResult.exception}" });
+                return RedirectToPage("/ControlPanel", new { errorMessage = $"Ошибка при выполнении запроса:\n{selectResult.exception}" });
 
             var dbReader = selectResult.reader;
 
             if (!await dbReader.ReadAsync())
             {
                 await dbReader.CloseAsync();
-                return RedirectToPage("/ControlPanel", new { errorMessage = "�������� � ��������� id �� ������!!" });
+                return RedirectToPage("/ControlPanel", new { errorMessage = "Читатель с таким id не найден!" });
             }
 
             try
@@ -45,14 +45,11 @@ namespace LibraryAppWeb.Pages.View
                 Patronymic = dbReader.GetString(3);
                 IssuedDate = dbReader.GetDateTime(4);
                 Birthday = dbReader.GetDateTime(5);
-
-                HttpContext.Session.SetString("ReaderId", id.ToString());
-                HttpContext.Session.SetString("EntryVersion", dbReader.GetInt64(6).ToString());
             }
             catch (Exception ex)
             {
                 await dbReader.CloseAsync();
-                return RedirectToPage("/ControlPanel", new { errorMessage = "�������� � ��������� id �� ������!!" });
+                return RedirectToPage("/ControlPanel", new { errorMessage = $"Ошибка при чтении датбазы:\n{ex}!" });
             }
 
             await dbReader.CloseAsync();

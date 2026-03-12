@@ -46,7 +46,8 @@ namespace LibraryAppWeb.Pages.View
             }
             catch (Exception ex)
             {
-                return RedirectToPage("/ControlPanel", new { errorMessage = " нига с указанным id не найдена!" });
+                await dbReader.CloseAsync();
+                return RedirectToPage("/ControlPanel", new { errorMessage = $"ќшибка при чтении датбазы:\n{ex}!" });
             }
 
             await dbReader.CloseAsync();

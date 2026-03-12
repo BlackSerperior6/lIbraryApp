@@ -11,6 +11,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
     {
         options.LoginPath = "/Authentication";
         options.LogoutPath = "/LogOut";
+        options.AccessDeniedPath = "/AccessDenied";
         options.ReturnUrlParameter = "returnUrl";
     });
 

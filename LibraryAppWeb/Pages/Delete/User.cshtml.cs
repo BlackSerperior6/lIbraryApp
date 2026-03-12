@@ -1,4 +1,3 @@
-using LibraryAppWeb.Features;
 using LibraryAppWeb.Handlers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -6,8 +5,8 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace LibraryAppWeb.Pages.Delete
 {
-    [Authorize]
-    public class ReaderModel : PageModel
+    [Authorize(Roles = "Admin")]
+    public class UserModel : PageModel
     {
         [BindProperty]
         public long Id { get; set; } = 1;
@@ -16,7 +15,7 @@ namespace LibraryAppWeb.Pages.Delete
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var result = await ReaderBaseHandler.RemoveReaderAsync(Id);
+            var result = await DatabaseUsersHandler.RemoveUserAsync(Id);
 
             if (!result.success)
             {
@@ -26,11 +25,11 @@ namespace LibraryAppWeb.Pages.Delete
 
             if (result.affectedRows == 0)
             {
-                ErrorMessage = $"Не существует читателя с id {Id}";
+                ErrorMessage = $"Не существует пользователя с id {Id}";
                 return Page();
             }
 
-            return RedirectToPage("/ControlPanel", new { successMessage = "Читатель был успешно удален!" });
+            return RedirectToPage("/AdminPanel", new { successMessage = "Пользователь был успешно удален!" });
         }
     }
 }

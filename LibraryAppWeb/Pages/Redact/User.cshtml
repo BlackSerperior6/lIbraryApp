@@ -1,26 +1,26 @@
-@page
-@model LibraryAppWeb.Pages.Create.UserModel
+п»ї@page
+@model LibraryAppWeb.Pages.Redact.UserModel
 <div class="create-user-form">
-    <h2>Создание пользователя</h2>
+    <h2>Р РµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ</h2>
 
     @if (!string.IsNullOrEmpty(Model.ErrorMessage))
     {
-            <div class="alert alert-danger">@Model.ErrorMessage</div>
+        <div class="alert alert-danger">@Model.ErrorMessage</div>
     }
 
     <form method="post">
         <div class="form-group">
-            <label>Логин</label>
+            <label>Р›РѕРіРёРЅ</label>
             <input asp-for="Login" class="form-control" />
         </div>
         <div class="form-group">
-            <label>Пароль</label>
+            <label>РџР°СЂРѕР»СЊ</label>
             <input asp-for="Password" class="form-control" />
         </div>
         <div class="form-group">
-            <label>Роль</label>
+            <label>Р РѕР»СЊ</label>
             <input asp-for="Role" class="form-control" />
         </div>
-        <button type="submit" class="btn btn-primary">Добавить пользователя</button>
+        <button type="submit" class="btn btn-primary">Р—Р°РєРѕРЅС‡РёС‚СЊ СЂРµРґР°РєС‚РёСЂРѕРІР°РЅРёРµ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ</button>
     </form>
 </div>

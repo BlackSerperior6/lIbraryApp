@@ -24,7 +24,9 @@ namespace LibraryAppWeb.Pages
             return Page();
         }
 
-        public IActionResult OnPostRedactUser() => RedirectToPage("/Redact/Reader", new { id = RedactReaderId });
+        public IActionResult OnPostRedactUser() => RedirectToPage("/Redact/User", new { id = RedactUserId });
+
+        public IActionResult OnPostViewUser() => RedirectToPage("/View/User", new { id = ViewUserId });
     }
 
 }

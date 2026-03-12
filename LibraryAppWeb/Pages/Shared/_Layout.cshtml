@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - LibraryAppWeb</title>
+    <title>@ViewData["Title"] - Библиотечное приложение</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
@@ -21,22 +21,29 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Index">Домашняя страница</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Authentication">Log In</a>
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Authentication">Войти</a>
                         </li>
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li><hr class="dropdown-divider"></li>
                             <li class="nav-item">
                                 <form asp-page="/LogOut" method="post">
-                                    <button type="submit" class="btn btn-no-outline">Log Out</button>
+                                    <button type="submit" class="btn btn-no-outline">Выйти</button>
                                 </form>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-page="/ControlPanel">Control Panel</a>
+                                <a class="nav-link text-dark" asp-area="" asp-page="/ControlPanel">Панель управления</a>
                             </li>
+
+                            @if (User.IsInRole("Admin"))
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-page="/AdminPanel">Админская панель</a>
+                                </li>
+                            }
                         }
                     </ul>
                 </div>
@@ -48,12 +55,6 @@
             @RenderBody()
         </main>
     </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - LibraryAppWeb - <a asp-area="" asp-page="/Privacy">Privacy</a>
-        </div>
-    </footer>
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>

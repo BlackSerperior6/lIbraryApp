@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
+using Dapper;
 
 namespace LibraryAppWeb.Pages
 {
@@ -18,41 +19,18 @@ namespace LibraryAppWeb.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, Login),
-                new Claim(ClaimTypes.Role, "testAdmin")
-            };
-
-            await HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme,
-                new ClaimsPrincipal(new ClaimsIdentity(claims, "Cookies")));
-
-            var returnUrl = Request.Query["returnUrl"].ToString();
-
-            if (!string.IsNullOrWhiteSpace(returnUrl))
-                return Redirect(returnUrl);
-            else
-                return RedirectToPage("/ControlPanel");
-
-            /*string query = $"SELECT \"PasswordHash\", \"PasswordSalt\", \"Role\" from \"DBUsers\" WHERE 'Login' = @login;";
+            string query = $"SELECT \"PasswordHash\", \"PasswordSalt\", \"Role\" from \"DatabaseUsers\" WHERE 'Login' = @login;";
 
             try
             {
-                bool adminOvverideFlag = true;
-
-                await using var connection = await DataBaseConnectionFactory.CreateConnection();
+                await using var connection = DataBaseConnectionFactory.CreateConnection();
 
                 var user = await connection.QueryFirstOrDefaultAsync
                     <(string passwordHash, string passwordSalt, string role)>(query, new { login = Login });
 
-                if (!string.IsNullOrWhiteSpace(user.passwordSalt) || adminOvverideFlag)
+                if (!string.IsNullOrWhiteSpace(user.passwordSalt))
                 {
-                    var hashedPassword = BCrypt.Net.BCrypt.HashPassword(Password + user.passwordSalt);
-
-                    bool isValid = BCrypt.Net.BCrypt.Verify(Password, hashedPassword);
-
-                    if (isValid || adminOvverideFlag)
+                    if (isValid)
                     {
                         var claims = new List<Claim>
                         {
@@ -64,8 +42,10 @@ namespace LibraryAppWeb.Pages
                             CookieAuthenticationDefaults.AuthenticationScheme,
                             new ClaimsPrincipal(new ClaimsIdentity(claims, "Cookies")));
 
-                        if (ReturnUrl != null)
-                            return Redirect(ReturnUrl);
+                        var returnUrl= Request.Query["returnUrl"].ToString();
+
+                        if (!string.IsNullOrWhiteSpace(returnUrl))
+                            return Redirect(returnUrl);
                         else
                             return RedirectToPage("/ControlPanel");
                     }
@@ -77,7 +57,7 @@ namespace LibraryAppWeb.Pages
             }
 
             ErrorMessage = "Неверный логин или пароль!";
-            return Page();*/
+            return Page();
         }
     }
 }

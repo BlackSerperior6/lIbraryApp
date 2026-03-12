@@ -1,4 +1,4 @@
-namespace LibraryAppWeb.Features
+namespace LibraryAppWeb.Features;
 
 public class DatabaseUser
 {

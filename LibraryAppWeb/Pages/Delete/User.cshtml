@@ -1,0 +1,18 @@
+﻿@page
+@model LibraryAppWeb.Pages.Delete.UserModel
+<div class="delete-user-form">
+    <h2>Удаление пользователя</h2>
+
+    @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+    {
+            <div class="alert alert-danger">@Model.ErrorMessage</div>
+    }
+
+    <form method="post">
+        <div class="form-group">
+            <label>Id пользователя</label>
+            <input asp-for="Id" type="number" step="1" min="1" max="18446744073709551615" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Удалить пользователя</button>
+    </form>
+</div>
