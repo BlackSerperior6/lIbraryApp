@@ -114,4 +114,25 @@ public static class BookCatalogHandler
             return (false, e);
         }
     }
+
+    public static async Task<(bool success, NpgsqlException exception, NpgsqlDataReader reader)> GetAllBooks()
+    {
+        string query = "SELECT * FROM \"BookCatalog\" ORDER BY \"BookId\" ASC";
+
+        try
+        {
+            var connection = DataBaseConnectionFactory.CreateConnection();
+            await connection.OpenAsync();
+
+            await using var command = new NpgsqlCommand(query, connection);
+
+            var reader = await command.ExecuteReaderAsync(CommandBehavior.CloseConnection);
+            return (true, null, reader);
+        }
+        catch (NpgsqlException e) 
+        {
+            return (false, e, null);
+        }
+
+    }
 }

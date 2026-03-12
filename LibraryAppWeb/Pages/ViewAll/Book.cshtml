@@ -1,0 +1,29 @@
+@page
+@model LibraryAppWeb.Pages.ViewAll.BookModel
+<div class="viewall-book-form">
+    <h2>Просмотр списка книг</h2>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID книги</th>
+                <th>Название</th>
+                <th>Автор</th>
+                <th>Дата поступления</th>
+                <th>Дата выпуска</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pair in Model.Books)
+            {
+                <tr>
+                    <td>@pair.Key</td>
+                    <td>@pair.Value.Title</td>
+                    <td>@pair.Value.Author</td>
+                    <td>@pair.Value.ArrivalDate</td>
+                    <td>@pair.Value.ReleasedDate</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

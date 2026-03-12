@@ -28,14 +28,14 @@ namespace LibraryAppWeb.Pages.View
             var selectResult = await ReaderBaseHandler.GetInfoAboutReaderAsync(id);
 
             if (!selectResult.success)
-                return RedirectToPage("/ControlPanel", new { errorMessage = $"Произошла ошибка во время выполнения запроса:\n{selectResult.exception}" });
+                return RedirectToPage("/ControlPanel", new { errorMessage = $"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ:\n{selectResult.exception}" });
 
             var dbReader = selectResult.reader;
 
             if (!await dbReader.ReadAsync())
             {
                 await dbReader.CloseAsync();
-                return RedirectToPage("/ControlPanel", new { errorMessage = "Читатель с указанным id не найден!!" });
+                return RedirectToPage("/ControlPanel", new { errorMessage = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ id пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ!!" });
             }
 
             try
@@ -51,7 +51,8 @@ namespace LibraryAppWeb.Pages.View
             }
             catch (Exception ex)
             {
-                return RedirectToPage("/ControlPanel", new { errorMessage = "Читатель с указанным id не найден!!" });
+                await dbReader.CloseAsync();
+                return RedirectToPage("/ControlPanel", new { errorMessage = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ id пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ!!" });
             }
 
             await dbReader.CloseAsync();

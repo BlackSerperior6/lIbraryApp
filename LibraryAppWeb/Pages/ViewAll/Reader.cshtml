@@ -1,0 +1,31 @@
+@page
+@model LibraryAppWeb.Pages.ViewAll.ReaderModel
+<div class="viewall-reader-form">
+    <h2>Просмотр списка читателей</h2>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID билета</th>
+                <th>Фамилия</th>
+                <th>Имя</th>
+                <th>Отчество</th>
+                <th>Дата выдачи</th>
+                <th>Дата рождения</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pair in Model.Readers)
+            {
+                <tr>
+                    <td>@pair.Key</td>
+                    <td>@pair.Value.LastName</td>
+                    <td>@pair.Value.FirstName</td>
+                    <td>@pair.Value.Patronymic</td>
+                    <td>@pair.Value.IssuedDate</td>
+                    <td>@pair.Value.BirthDate</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

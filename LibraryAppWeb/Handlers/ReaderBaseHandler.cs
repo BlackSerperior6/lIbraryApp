@@ -115,4 +115,25 @@ public static class ReaderBaseHandler
             return (false, e);
         }
     }
+
+    public static async Task<(bool success, NpgsqlException exception, NpgsqlDataReader reader)> GetAllReaders()
+    {
+        string query = "SELECT * FROM \"ReaderBase\" ORDER BY \"ReaderID\" ASC";
+
+        try
+        {
+            var connection = DataBaseConnectionFactory.CreateConnection();
+            await connection.OpenAsync();
+
+            await using var command = new NpgsqlCommand(query, connection);
+
+            var reader = await command.ExecuteReaderAsync(CommandBehavior.CloseConnection);
+            return (true, null, reader);
+        }
+        catch (NpgsqlException e) 
+        {
+            return (false, e, null);
+        }
+
+    }
 }
