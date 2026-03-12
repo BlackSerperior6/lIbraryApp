@@ -1,0 +1,53 @@
+@page
+@model LibraryAppWeb.Pages.AdminPanelModel
+@{
+    ViewData["Title"] = "Админская панель";
+}
+
+@if (!string.IsNullOrEmpty(Model.SuccessMessage))
+{
+    <div class="alert alert-success">@Model.SuccessMessage</div>
+}
+
+@if (!string.IsNullOrEmpty(Model.ErrorMessage))
+{
+        <div class="alert alert-danger">@Model.ErrorMessage</div>
+}
+
+<div class="card mb-4 shadow-sm" id="bookSection">
+    <div class="card-header bg-success text-white">
+        <h5 class="card-title mb-0">Управление пользователями</h5>
+    </div>
+    <div class="card-body">
+        <div class="row g-2">
+            <div class="col-sm-6 col-md-3">
+                <a class="btn btn-outline-success w-100 h-100 py-3" asp-area="" asp-page="/Create/Book">Создать пользователя</a>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <a class="btn btn-outline-danger w-100 h-100 py-3" asp-area="" asp-page="/Delete/Book">Удалить пользователя</a>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <form method="post" asp-page-handler="RedactUser">
+                    <button type="submit" class="btn btn-outline-warning w-100 h-100 py-3">Редактировать пользователя</button>
+                    <div class="form-group">
+                        <label>Id пользователя</label>
+                        <input asp-for="RedactUserId" class="form-control" />
+                    </div>
+                </form>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <form method="post" asp-page-handler="ViewUser">
+                    <button type="submit" class="btn btn-outline-info w-100 h-100 py-3">Информация о пользователе</button>
+                    <div class="form-group">
+                        <label>Id пользователя</label>
+                        <input asp-for="ViewUserId" class="form-control" />
+                    </div>
+                </form>
+            </div>
+            <div class="col-sm-6 col-md-3">
+                <a class="btn btn-outline-secondary w-100 py-4" asp-area="" asp-page="/ViewAll/Book">Просмотр списка пользователей</a>
+            </div>
+        </div>
+    </div>
+</div>
+
