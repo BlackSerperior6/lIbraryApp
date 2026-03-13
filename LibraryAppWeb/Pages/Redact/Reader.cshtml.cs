@@ -31,14 +31,14 @@ namespace LibraryAppWeb.Pages.Redact
             var selectResult = await ReaderBaseHandler.GetInfoAboutReaderAsync(id);
 
             if (!selectResult.success)
-                return RedirectToPage("/ControlPanel", new { errorMessage = $"Произошла ошибка во время выполнения запроса:\n{selectResult.exception}" });
+                return RedirectToPage("/ControlPanel", new { errorMessage = $"РћС€РёР±РєР° РїСЂРё РІС‹РїРѕР»РЅРµРЅРёРё Р·Р°РїСЂРѕСЃР°:\n{selectResult.exception}" });
 
             var dbReader = selectResult.reader;
 
             if (!await dbReader.ReadAsync())
             {
                 await dbReader.CloseAsync();
-                return RedirectToPage("/ControlPanel", new { errorMessage = "Читатель с указанным id не найден!!" });
+                return RedirectToPage("/ControlPanel", new { errorMessage = "РќРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚ С‡РёС‚Р°С‚РµР»СЏ СЃ С‚Р°РєРёРј id" });
             }
 
             try
@@ -54,7 +54,7 @@ namespace LibraryAppWeb.Pages.Redact
             }
             catch (Exception ex) 
             {
-                return RedirectToPage("/ControlPanel", new { errorMessage = "Читатель с указанным id не найден!!" });
+                return RedirectToPage("/ControlPanel", new { errorMessage = $"РћС€РёР±РєР° РІРѕ РІСЂРµРјСЏ С‡С‚РµРЅРёСЏ РґР°С‚Р°Р±Р°Р·С‹:{ex}" });
             }
 
             await dbReader.CloseAsync();
@@ -67,7 +67,7 @@ namespace LibraryAppWeb.Pages.Redact
             if (string.IsNullOrWhiteSpace(LastName) || string.IsNullOrWhiteSpace(FirstName) ||
                 string.IsNullOrWhiteSpace(Patronymic))
             {
-                ErrorMessage = "Ни одно из полей не должно быть пустым!";
+                ErrorMessage = "Р’СЃРµ РїРѕР»СЏ РґРѕР»Р¶РЅС‹ Р±С‹С‚СЊ Р·Р°РїРѕР»РЅРµРЅС‹!";
                 return Page();
             }
 
@@ -76,7 +76,7 @@ namespace LibraryAppWeb.Pages.Redact
 
             if (!long.TryParse(readerIdString, out var readerId) || !long.TryParse(entryVersionString, out var entryVersion))
             {
-                ErrorMessage = "Не удалось получить данные из HTTP контекста!";
+                ErrorMessage = "РќРµ СѓРґР°Р»РѕСЃСЊ РїРѕР»СѓС‡РёС‚СЊ РґР°РЅРЅС‹Рµ РёР· HTTP РєРѕРЅС‚РµРєСЃС‚Р°!";
                 return Page();
             }
 
@@ -86,11 +86,11 @@ namespace LibraryAppWeb.Pages.Redact
 
             if (!updateResult.success)
             {
-                ErrorMessage = $"Ошибка при выполнение запроса: {updateResult.exception}";
+                ErrorMessage = $"РћС€РёР±РєР° РІРѕ РІСЂРµРјСЏ РІС‹РїРѕР»РЅРµРЅРёСЏ Р·Р°РїСЂРѕСЃР°: {updateResult.exception}";
                 return Page();
             }
 
-            return RedirectToPage("/ControlPanel", new { successMessage = "Читатель был успешно отредактирован!" });
+            return RedirectToPage("/ControlPanel", new { successMessage = "Р§РёС‚Р°С‚РµР»СЊ Р±С‹Р» СѓСЃРїРµС€РЅРѕ СѓРґР°Р»РµРЅ!" });
         }
     }
 }

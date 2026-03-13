@@ -28,14 +28,14 @@ namespace LibraryAppWeb.Pages.Redact
             var selectResult = await BookCatalogHandler.GetInfoAboutBookAsync(id);
 
             if (!selectResult.success)
-                return RedirectToPage("/ControlPanel", new { errorMessage = $"��������� ������ �� ����� ���������� �������:\n{selectResult.exception}" });
+                return RedirectToPage("/ControlPanel", new { errorMessage = $"Ошибка при выполнении запроса:\n{selectResult.exception}" });
 
             var dbReader = selectResult.reader;
 
             if (!await dbReader.ReadAsync())
             {
                 await dbReader.CloseAsync();
-                return RedirectToPage("/ControlPanel", new { errorMessage = "����� � ��������� id �� �������!" });
+                return RedirectToPage("/ControlPanel", new { errorMessage = " Не существует книги с таким id!" });
             }
 
             try
@@ -62,7 +62,7 @@ namespace LibraryAppWeb.Pages.Redact
         {
             if (string.IsNullOrWhiteSpace(Title) || string.IsNullOrWhiteSpace(Author))
             {
-                ErrorMessage = "�� ���� �� ����� �� ������ ���� ������!";
+                ErrorMessage = "Все поля должны быть заполнены";
                 return Page();
             }
 
@@ -71,7 +71,7 @@ namespace LibraryAppWeb.Pages.Redact
 
             if (!long.TryParse(bookIdString, out var bookId) || !long.TryParse(entryVersionString, out var entryVersion))
             {
-                ErrorMessage = "�� ������� �������� ������ �� HTTP ���������!";
+                ErrorMessage = "Не удалось получить HTTP контекст!";
                 return Page();
             }
 
@@ -81,11 +81,11 @@ namespace LibraryAppWeb.Pages.Redact
 
             if (!updateResult.success)
             {
-                ErrorMessage = $"������ ��� ���������� �������: {updateResult.exception}";
+                ErrorMessage = $"Ошибка при выполнении запроса: {updateResult.exception}";
                 return Page();
             }
 
-            return RedirectToPage("/ControlPanel", new { successMessage = "����� ���� ������� ����������������!" });
+            return RedirectToPage("/ControlPanel", new { successMessage = "Читатель был успешно отредактирован!" });
         }
     }
 }

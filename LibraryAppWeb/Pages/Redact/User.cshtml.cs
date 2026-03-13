@@ -26,14 +26,14 @@ namespace LibraryAppWeb.Pages.Redact
             var selectResult = await DatabaseUsersHandler.GetInfoAboutUserAsync(id);
 
             if (!selectResult.success)
-                return RedirectToPage("/AdminPanel", new { errorMessage = $"Произошла ошибка во время выполнения запроса:\n{selectResult.exception}" });
+                return RedirectToPage("/AdminPanel", new { errorMessage = $"РћС€РёР±РєР° РІРѕ РІСЂРµРјСЏ РІС‹РїРѕР»РЅРµРЅРёСЏ Р·Р°РїСЂРѕСЃР°:\n{selectResult.exception}" });
 
             var dbReader = selectResult.reader;
 
             if (!await dbReader.ReadAsync())
             {
                 await dbReader.CloseAsync();
-                return RedirectToPage("/AdminPanel", new { errorMessage = "Пользователь с указанным id не найден!!" });
+                return RedirectToPage("/AdminPanel", new { errorMessage = "РќРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ СЃ С‚Р°РєРёРј id!!" });
             }
 
             try
@@ -46,7 +46,7 @@ namespace LibraryAppWeb.Pages.Redact
             }
             catch (Exception ex)
             {
-                return RedirectToPage("/AdminPanel", new { errorMessage = $"Произошла ошибца при чтении дата базы:\n{ex}" });
+                return RedirectToPage("/AdminPanel", new { errorMessage = $"пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ:\n{ex}" });
             }
 
             await dbReader.CloseAsync();
@@ -59,7 +59,7 @@ namespace LibraryAppWeb.Pages.Redact
             if (string.IsNullOrWhiteSpace(Login) || string.IsNullOrWhiteSpace(Password) ||
                 string.IsNullOrWhiteSpace(Role))
             {
-                ErrorMessage = "Ни одно из полей не должно быть пустым!";
+                ErrorMessage = "пїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ!";
                 return Page();
             }
 
@@ -68,7 +68,7 @@ namespace LibraryAppWeb.Pages.Redact
 
             if (!long.TryParse(userIdString, out var userId) || !long.TryParse(entryVersionString, out var entryVersion))
             {
-                ErrorMessage = "Не удалось получить данные из HTTP контекста!";
+                ErrorMessage = "пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ HTTP пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!";
                 return Page();
             }
 
@@ -79,14 +79,14 @@ namespace LibraryAppWeb.Pages.Redact
             if (!updateResult.success)
             {
                 if (updateResult.exception.SqlState == PostgresErrorCodes.UniqueViolation)
-                    ErrorMessage = $"Ошибка! Пользователь с таким логином уже существует!";
+                    ErrorMessage = $"пїЅпїЅпїЅпїЅпїЅпїЅ! пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!";
                 else
-                    ErrorMessage = $"Ошибка при выполнение запроса: {updateResult.exception}";
+                    ErrorMessage = $"пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ: {updateResult.exception}";
 
                 return Page();
             }
 
-            return RedirectToPage("/AdminPanel", new { successMessage = "Пользователь был успешно отредактирован!" });
+            return RedirectToPage("/AdminPanel", new { successMessage = "пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ!" });
         }
     }
 }

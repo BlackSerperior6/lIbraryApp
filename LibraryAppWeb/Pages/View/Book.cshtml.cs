@@ -27,14 +27,14 @@ namespace LibraryAppWeb.Pages.View
             var selectResult = await BookCatalogHandler.GetInfoAboutBookAsync(id);
 
             if (!selectResult.success)
-                return RedirectToPage("/ControlPanel", new { errorMessage = $"Произошла ошибка во время выполнения запроса:\n{selectResult.exception}" });
+                return RedirectToPage("/ControlPanel", new { errorMessage = $"РћС€РёР±РєР° РїСЂРё РІС‹РїРѕР»РЅРµРЅРёРё Р·Р°РїСЂРѕСЃР°:\n{selectResult.exception}" });
 
             var dbReader = selectResult.reader;
 
             if (!await dbReader.ReadAsync())
             {
                 await dbReader.CloseAsync();
-                return RedirectToPage("/ControlPanel", new { errorMessage = "Книга с указанным id не найдена!" });
+                return RedirectToPage("/ControlPanel", new { errorMessage = "РќРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚ РєРЅРёРіРё СЃ С‚Р°РєРёРј id!" });
             }
 
             try
@@ -47,7 +47,7 @@ namespace LibraryAppWeb.Pages.View
             catch (Exception ex)
             {
                 await dbReader.CloseAsync();
-                return RedirectToPage("/ControlPanel", new { errorMessage = $"Ошибка при чтении датбазы:\n{ex}!" });
+                return RedirectToPage("/ControlPanel", new { errorMessage = $"пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ:\n{ex}!" });
             }
 
             await dbReader.CloseAsync();

@@ -17,7 +17,7 @@ namespace LibraryAppWeb.Pages.ViewAll
             var selectResult = await DatabaseUsersHandler.GetAllUsers();
 
             if (!selectResult.success)
-                return RedirectToPage("/AdminPanel", new { errorMessage = $"Ошибка при выполнении запроса:\n{selectResult.exception}" });
+                return RedirectToPage("/AdminPanel", new { errorMessage = $"РћС€РёР±РєР° РїСЂРё РІС‹РїРѕР»РЅРµРЅРёРё Р·Р°РїСЂРѕСЃР°:\n{selectResult.exception}" });
 
             var dbReader = selectResult.reader;
 
@@ -41,7 +41,7 @@ namespace LibraryAppWeb.Pages.ViewAll
             catch (Exception ex)
             {
                 await dbReader.CloseAsync();
-                return RedirectToPage("/AdminPanel", new { errorMessage = $"Ошибка во время чтения дата базы:\n{ex}" });
+                return RedirectToPage("/AdminPanel", new { errorMessage = $"РћС€РёР±РєР° РїСЂРё С‡С‚РµРЅРёРё РґР°С‚Р° Р±Р°Р·С‹:\n{ex}" });
             }
 
         }

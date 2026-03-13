@@ -19,14 +19,14 @@ namespace LibraryAppWeb.Pages.View
             var selectResult = await DatabaseUsersHandler.GetInfoAboutUserAsync(id);
 
             if (!selectResult.success)
-                return RedirectToPage("/AdminPanel", new { errorMessage = $"Произошла ошибка во время выполнения запроса:\n{selectResult.exception}" });
+                return RedirectToPage("/AdminPanel", new { errorMessage = $"РћС€РёР±РєР° РїСЂРё РІС‹РїРѕР»РЅРµРЅРёРё Р·Р°РїСЂРѕСЃР°:\n{selectResult.exception}" });
 
             var dbReader = selectResult.reader;
 
             if (!await dbReader.ReadAsync())
             {
                 await dbReader.CloseAsync();
-                return RedirectToPage("/AdminPanel", new { errorMessage = "Пользователь с указанным id не найден!" });
+                return RedirectToPage("/AdminPanel", new { errorMessage = "РќРµ СЃСѓС‰РµСЃС‚РІСѓРµС‚ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ СЃ С‚Р°РєРёРј id!" });
             }
 
             try
@@ -37,7 +37,7 @@ namespace LibraryAppWeb.Pages.View
             catch (Exception ex)
             {
                 await dbReader.CloseAsync();
-                return RedirectToPage("/AdminPanel", new { errorMessage = $"Ошибка при чтении датабазы:\n{ex}" });
+                return RedirectToPage("/AdminPanel", new { errorMessage = $"РћС€РёР±РєР° РїСЂРё С‡С‚РµРЅРёРё РґР°С‚Р° Р±Р°Р·С‹:\n{ex}" });
             }
 
             await dbReader.CloseAsync();
