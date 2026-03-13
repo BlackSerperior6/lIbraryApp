@@ -23,58 +23,33 @@ namespace LibraryAppWeb.Pages
 
             try
             {
-                bool debugBypassAuth = true;
+                await using var connection = DataBaseConnectionFactory.CreateConnection();
 
-                if (debugBypassAuth)
+                var user = await connection.QueryFirstOrDefaultAsync
+                    <(string passwordHash, string role)>(query, new { login = Login });
+
+                if (!string.IsNullOrWhiteSpace(user.passwordHash))
                 {
-                    var claims = new List<Claim>
+                    bool isValid = BCrypt.Net.BCrypt.Verify(Password, user.passwordHash);
+
+                    if (isValid)
+                    {
+                        var claims = new List<Claim>
                     {
                         new Claim(ClaimTypes.Name, Login),
-                        new Claim(ClaimTypes.Role, "Admin")
+                        new Claim(ClaimTypes.Role, user.role)
                     };
 
-                    await HttpContext.SignInAsync(
-                        CookieAuthenticationDefaults.AuthenticationScheme,
-                        new ClaimsPrincipal(new ClaimsIdentity(claims, "Cookies")));
+                        await HttpContext.SignInAsync(
+                            CookieAuthenticationDefaults.AuthenticationScheme,
+                            new ClaimsPrincipal(new ClaimsIdentity(claims, "Cookies")));
 
-                    var returnUrl = Request.Query["returnUrl"].ToString();
+                        var returnUrl = Request.Query["returnUrl"].ToString();
 
-                    if (!string.IsNullOrWhiteSpace(returnUrl))
-                        return Redirect(returnUrl);
-                    else
-                        return RedirectToPage("/ControlPanel");
-
-                }
-                else
-                {
-                    await using var connection = DataBaseConnectionFactory.CreateConnection();
-
-                    var user = await connection.QueryFirstOrDefaultAsync
-                        <(string passwordHash, string role)>(query, new { login = Login });
-
-                    if (!string.IsNullOrWhiteSpace(user.passwordHash))
-                    {
-                        bool isValid = BCrypt.Net.BCrypt.Verify(Password, user.passwordHash);
-
-                        if (isValid)
-                        {
-                            var claims = new List<Claim>
-                        {
-                            new Claim(ClaimTypes.Name, Login),
-                            new Claim(ClaimTypes.Role, user.role)
-                        };
-
-                            await HttpContext.SignInAsync(
-                                CookieAuthenticationDefaults.AuthenticationScheme,
-                                new ClaimsPrincipal(new ClaimsIdentity(claims, "Cookies")));
-
-                            var returnUrl = Request.Query["returnUrl"].ToString();
-
-                            if (!string.IsNullOrWhiteSpace(returnUrl))
-                                return Redirect(returnUrl);
-                            else
-                                return RedirectToPage("/ControlPanel");
-                        }
+                        if (!string.IsNullOrWhiteSpace(returnUrl))
+                            return Redirect(returnUrl);
+                        else
+                            return RedirectToPage("/ControlPanel");
                     }
                 }
             }
