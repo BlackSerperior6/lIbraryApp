@@ -3,6 +3,7 @@ using LibraryAppWeb.Handlers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Npgsql;
 
 namespace LibraryAppWeb.Pages.Create
 {
@@ -35,7 +36,11 @@ namespace LibraryAppWeb.Pages.Create
 
             if (!result.success)
             {
-                ErrorMessage = $"Ошибка при выполнение запроса: {result.exception}";
+                if (result.exception.SqlState == PostgresErrorCodes.UniqueViolation)
+                    ErrorMessage = $"Ошибка! Пользователь с таким логином уже существует!";
+                else
+                    ErrorMessage = $"Ошибка при выполнение запроса: {result.exception}";
+
                 return Page();
             }
 

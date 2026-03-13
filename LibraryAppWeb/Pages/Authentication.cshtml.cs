@@ -19,54 +19,62 @@ namespace LibraryAppWeb.Pages
 
         public async Task<IActionResult> OnPostAsync()
         {
-            string query = $"SELECT \"PasswordHash\", \"Role\" from \"DatabaseUsers\" WHERE \"Login\"    = @login;";
+            string query = $"SELECT \"PasswordHash\", \"Role\" from \"DatabaseUsers\" WHERE \"Login\" = @login;";
 
             try
             {
-                /*var claims = new List<Claim>
+                bool debugBypassAuth = true;
+
+                if (debugBypassAuth)
                 {
-                    new Claim(ClaimTypes.Name, Login),
-                    new Claim(ClaimTypes.Role, "Admin")
-                };
-
-                await HttpContext.SignInAsync(
-                    CookieAuthenticationDefaults.AuthenticationScheme,
-                    new ClaimsPrincipal(new ClaimsIdentity(claims, "Cookies")));
-
-                var returnUrl= Request.Query["returnUrl"].ToString();
-
-                if (!string.IsNullOrWhiteSpace(returnUrl))
-                    return Redirect(returnUrl);
-                else
-                    return RedirectToPage("/ControlPanel");*/
-
-                await using var connection = DataBaseConnectionFactory.CreateConnection();
-
-                var user = await connection.QueryFirstOrDefaultAsync
-                    <(string passwordHash, string role)>(query, new { login = Login });
-
-                if (!string.IsNullOrWhiteSpace(user.passwordHash))
-                {
-                    bool isValid = BCrypt.Net.BCrypt.Verify(Password, user.passwordHash);
-
-                    if (isValid)
+                    var claims = new List<Claim>
                     {
-                        var claims = new List<Claim>
+                        new Claim(ClaimTypes.Name, Login),
+                        new Claim(ClaimTypes.Role, "Admin")
+                    };
+
+                    await HttpContext.SignInAsync(
+                        CookieAuthenticationDefaults.AuthenticationScheme,
+                        new ClaimsPrincipal(new ClaimsIdentity(claims, "Cookies")));
+
+                    var returnUrl = Request.Query["returnUrl"].ToString();
+
+                    if (!string.IsNullOrWhiteSpace(returnUrl))
+                        return Redirect(returnUrl);
+                    else
+                        return RedirectToPage("/ControlPanel");
+
+                }
+                else
+                {
+                    await using var connection = DataBaseConnectionFactory.CreateConnection();
+
+                    var user = await connection.QueryFirstOrDefaultAsync
+                        <(string passwordHash, string role)>(query, new { login = Login });
+
+                    if (!string.IsNullOrWhiteSpace(user.passwordHash))
+                    {
+                        bool isValid = BCrypt.Net.BCrypt.Verify(Password, user.passwordHash);
+
+                        if (isValid)
+                        {
+                            var claims = new List<Claim>
                         {
                             new Claim(ClaimTypes.Name, Login),
                             new Claim(ClaimTypes.Role, user.role)
                         };
 
-                        await HttpContext.SignInAsync(
-                            CookieAuthenticationDefaults.AuthenticationScheme,
-                            new ClaimsPrincipal(new ClaimsIdentity(claims, "Cookies")));
+                            await HttpContext.SignInAsync(
+                                CookieAuthenticationDefaults.AuthenticationScheme,
+                                new ClaimsPrincipal(new ClaimsIdentity(claims, "Cookies")));
 
-                        var returnUrl= Request.Query["returnUrl"].ToString();
+                            var returnUrl = Request.Query["returnUrl"].ToString();
 
-                        if (!string.IsNullOrWhiteSpace(returnUrl))
-                            return Redirect(returnUrl);
-                        else
-                            return RedirectToPage("/ControlPanel");
+                            if (!string.IsNullOrWhiteSpace(returnUrl))
+                                return Redirect(returnUrl);
+                            else
+                                return RedirectToPage("/ControlPanel");
+                        }
                     }
                 }
             }
