@@ -30,12 +30,6 @@
                     <a href="#bookSection" class="list-group-item list-group-item-action" data-bs-toggle="collapse">
                         <i class="fas fa-book me-2"></i>Книги
                     </a>
-                    <a href="#reportSection" class="list-group-item list-group-item-action" data-bs-toggle="collapse">
-                        <i class="fas fa-chart-bar me-2"></i>Отчеты
-                    </a>
-                    <a href="#loanSection" class="list-group-item list-group-item-action" data-bs-toggle="collapse">
-                        <i class="fas fa-exchange-alt me-2"></i>Выдача/Прием
-                    </a>
                 </div>
             </div>
         </div>
@@ -117,58 +111,6 @@
                         </div>
                         <div class="col-sm-6 col-md-3">
                             <a class="btn btn-outline-secondary w-100 py-4" asp-area="" asp-page="/ViewAll/Book">Просмотр списка книг</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Reports Section (replaces GroupBox3) -->
-            <div class="card mb-4 shadow-sm" id="reportSection">
-                <div class="card-header bg-info text-white">
-                    <h5 class="card-title mb-0">Справочная информация</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row g-2">
-                        <div class="col-md-4">
-                            <a asp-action="ReturnedBooksReport" class="btn btn-outline-secondary w-100 py-4">
-                                <i class="fas fa-calendar-check d-block fs-1 mb-2"></i>
-                                <span>Книги, возвращенные за период</span>
-                            </a>
-                        </div>
-                        <div class="col-md-4">
-                            <a asp-action="BorrowedBooksReport" class="btn btn-outline-secondary w-100 py-4">
-                                <i class="fas fa-calendar-plus d-block fs-1 mb-2"></i>
-                                <span>Книги, взятые за период</span>
-                            </a>
-                        </div>
-                        <div class="col-md-4">
-                            <a asp-action="ReaderBooksList" class="btn btn-outline-secondary w-100 py-4">
-                                <i class="fas fa-list d-block fs-1 mb-2"></i>
-                                <span>Список книг у читателя</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Loan Management Section (replaces GroupBox4) -->
-            <div class="card mb-4 shadow-sm" id="loanSection">
-                <div class="card-header bg-warning text-white">
-                    <h5 class="card-title mb-0">Управление выдачей/приемом</h5>
-                </div>
-                <div class="card-body">
-                    <div class="row g-2">
-                        <div class="col-md-6">
-                            <a asp-action="BorrowBook" class="btn btn-outline-primary w-100 py-4">
-                                <i class="fas fa-hand-holding-heart d-block fs-1 mb-2"></i>
-                                <span>Выдать книгу читателю</span>
-                            </a>
-                        </div>
-                        <div class="col-md-6">
-                            <a asp-action="ReturnBook" class="btn btn-outline-success w-100 py-4">
-                                <i class="fas fa-book-return d-block fs-1 mb-2"></i>
-                                <span>Вернуть книгу от читателя</span>
-                            </a>
                         </div>
                     </div>
                 </div>
